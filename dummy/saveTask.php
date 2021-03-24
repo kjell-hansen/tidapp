@@ -12,46 +12,50 @@ if ($_SERVER['REQUEST_METHOD'] !== "POST") {
 
 // Kontrollera indata
 $error = [];
-if (isset($_POST['datum']) && $_POST['datum'] !== "") {
-    $in = filter_input(INPUT_POST, "datum", FILTER_SANITIZE_STRING);
-    if (($datum = date_create_immutable($in)) === false) {
-        $error[] = "Felaktigt datum";
-    }
+if (isset($_POST['date']) && $_POST['date'] !== "") {
+    $in = filter_input(INPUT_POST, "date", FILTER_SANITIZE_STRING);
+    if (($datum = date_create_from_format("Y-m-d", $in)) === false) {
+        $error[] = "Felaktigt 'date'";
+    }elseif ($datum->format('Y-m-d') != $in) {
+            $error[] = "Felaktigt angivet 'date'";
+        }
 } else {
-    $error[] = "'datum' saknas";
+    $error[] = "'date' saknas";
 }
 
-if (isset($_POST['tid']) && $_POST['tid'] !== "") {
-    $in = filter_input(INPUT_POST, "tid", FILTER_SANITIZE_STRING);
+if (isset($_POST['time']) && $_POST['time'] !== "") {
+    $in = filter_input(INPUT_POST, "time", FILTER_SANITIZE_STRING);
     $tidTest = explode(":", $in);
     if (substr_count($in, ":") === 0 || $tidTest[1] > 59) {
-        $error[] = "Felaktigt angiven tid";
+        $error[] = "Felaktigt angiven 'time'";
     } else {
-        if (($tid = date_create_immutable($in)) === false) {
-            $error[] = "Felaktig tid";
+        if (($tid = date_create_from_format('H:i', $in)) === false) {
+            $error[] = "Felaktig 'time'";
+        }elseif ($tid->format('G:i') != $in) {
+            $error[] = "Felaktigt angiven 'time'";
         }
-        if ($tidTest[0] > "23" || ($tid && $tid->format("H:i") > "08:00")) {
+        if ($tid && $tid->format("H:i") > "08:00") {
             $error[] = "Endast tillåtet att rapportera mindre än 8 timmars arbete på en gång";
         }
     }
 } else {
-    $error[] = "'tid' saknas";
+    $error[] = "'time' saknas";
 }
 
-$dutyid = filter_input(INPUT_POST, "uppgiftId", FILTER_SANITIZE_STRING);
-if ($dutyid != (string) intval($dutyid) || $dutyid < 1) {
-    $error[] = "Felaktig uppgiftId";
+$activityId = filter_input(INPUT_POST, "activityId ", FILTER_VALIDATE_INT);
+if ($activityId ===false || $activityId < 0) {
+    $error[] = "Felaktig 'activityId'";
 } else {
-    if ($dutyid > 100) {
-        $error[] = "Angiven uppgiftId ($dutyid) saknas";
+    if ($activityId > 100) {
+        $error[] = "Angiven 'activityId' ($activityId ) saknas";
     }
 }
-$beskrivning = filter_input(INPUT_POST, 'beskrivning', FILTER_SANITIZE_STRING);
+$description = filter_input(INPUT_POST, 'description ', FILTER_SANITIZE_STRING);
 
 // Finns GET-data (dvs uppdatering av post!)
 if (isset($_GET['id'])) {
-    $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_STRING);
-    if ($id != (string) intval($id) || $id < 1) {
+    $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+    if ($id < 1) {
         $error[] = "Felaktigt id ($id) angivet";
     } else {
         if ($id > 100) {
@@ -71,13 +75,17 @@ if (count($error) > 0) {
 // Uppdatera? OK?
 if (isset($id)) {
     $out = new stdClass();
-    $out->meddelande = ["Spara gick bra", "1 rad(er) uppdaterades"];
-    skickaJSON($out);
+    if ($id > 50) {
+        $out->result = false;
+        $out->message = ["Inga förändringar i posten", "0 rad(er) uppdaterades"];
+    } else {
+        $out->result = true;
+        $out->message = ["Spara gick bra", "1 rad(er) uppdaterades"];
+    }
 } else {
     $id = rand(30, 50);
     $out = new stdClass();
-    $out->meddelande = ["Spara gick bra"];
+    $out->message = ["Spara gick bra"];
     $out->id = $id;
-    skickaJSON($out);
 }
-    
+skickaJSON($out);

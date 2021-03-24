@@ -4,38 +4,52 @@ declare (strict_types=1);
 require_once 'funktioner.php';
 $posterPerSida = 15;
 
+if ($_SERVER['REQUEST_METHOD'] === "POST") {
+    $error = new stdClass();
+    $error->error = ["Felaktigt anrop", "Metoden GET ska användas vid anrop till sidan"];
+    skickaJSON($error, 405);
+}
+
 // Kontrollera indata
 $error = [];
-if (isset($_GET['sida'])) {
-    $sida = filter_input(INPUT_GET, 'sida', FILTER_SANITIZE_STRING);
-    if ($sida != (string) intval($sida) || $sida < 1) {
-        $error[] = "Felaktigt sidnummer ('sida')";
-    } else {
-        $recFrom = ($sida - 1) * $posterPerSida;
+if (isset($_GET['page'])) {
+    $page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT);
+    if ($page < 1) {
+        $error[] = "Felaktigt sidnummer ('page')";
     }
 }
 
-if (!isset($sida)) {
-    if (isset($_GET['till']) && $_GET['till'] !== "") {
-        $in = filter_input(INPUT_GET, "till", FILTER_SANITIZE_STRING);
-        if (($till = date_create_immutable($in)) === false) {
-            $error[] = "Felaktigt datum för 'till'";
+if (!isset($_GET['page']) && !isset($_GET['to']) && !isset($_GET['from'])) {
+    $error = new stdClass();
+    $error->error = ["Felaktigt anrop", "'page' ELLER 'to' och 'from' ska anges vid anrop"];
+    skickaJSON($error, 400);
+}
+
+if (!isset($page)) {
+    if (isset($_GET['to']) && $_GET['to'] !== "") {
+        $in = filter_input(INPUT_GET, "to", FILTER_SANITIZE_STRING);
+        if (($to = date_create_from_format("Y-m-d", $in)) === false) {
+            $error[] = "Felaktigt datum för 'to'";
+        } elseif ($to->format('Y-m-d') != $in) {
+            $error[] = "Felaktigt angivet datum för 'to'";
         }
     } else {
-        $error[] = "'till' saknas";
-        $till = false;
+        $error[] = "'to' saknas";
+        $to = false;
     }
-    if (isset($_GET['fran']) && $_GET['fran'] !== "") {
-        $in = filter_input(INPUT_GET, "fran", FILTER_SANITIZE_STRING);
-        if (($fran = date_create_immutable($in)) === false) {
-            $error[] = "Felaktigt datum för 'fran'";
+    if (isset($_GET['from']) && $_GET['from'] !== "") {
+        $in = filter_input(INPUT_GET, "from", FILTER_SANITIZE_STRING);
+        if (($from = date_create_from_format("Y-m-d", $in)) === false) {
+            $error[] = "Felaktigt datum för 'from'";
+        }elseif ($from->format('Y-m-d') != $in) {
+            $error[] = "Felaktigt angivet datum för 'from'";
         }
     } else {
-        $error[] = "'fran' saknas";
-        $fran = false;
+        $error[] = "'from' saknas";
+        $from = false;
     }
-    if ($till && $fran && $till < $fran) {
-        $error[] = "'till' ska vara större än 'fran'";
+    if ($to && $from && $to < $from) {
+        $error[] = "'to' ska vara större än 'from'";
     }
 }
 
@@ -48,39 +62,46 @@ if (count($error) > 0) {
 }
 
 $out = new stdClass();
-if (isset($sida)) {
-    $out->sida = (int) $sida;
-    $out->sidor = ++$sida;
-
-    $out->uppgifter = [];
-    for ($i = 0; $i < $posterPerSida; $i++) {
-        $rec = new stdClass();
-        $rec->id = $recFrom + $i;
-        $rec->uppgiftId = $i % count($duties);
-        $rec->uppgift = $duties[$i % count($duties)];
-        $rec->datum = date("Y-m-d", strtotime("-$i days"));
-        $rec->tid = date("h:i", strtotime(rand(3, 8) * 15 . " minutes"));
-        $rec->beskrivning = "Fritext ";
-        $out->uppgifter[] = $rec;
+if (isset($page)) {
+    if ($page > 100) {
+        $out = new stdClass();
+        $out->pages = 100;
+        $out->message = ["Otillräckligt antal poster för att visa sidan"];
+        skickaJSON($out);
+    } else {
+        $page < 100 ? $out->pages = ++$page : $out->pages = 100;
+        $recFrom = ($page - 1) * $posterPerSida + 1;
+        $out->tasks = [];
+        for ($i = 0; $i < $posterPerSida; $i++) {
+            $rec = new stdClass();
+            $rec->id = $recFrom + $i;
+            $rec->activityId = $i % count($activities);
+            $rec->activity = $activities[$i % count($activities)];
+            $rec->date = date("Y-m-d", strtotime("-$i days"));
+            $rec->time = date("G:i", mktime(0, rand(3, 8) * 15));
+            $rec->description = "Fritext ";
+            $out->tasks[] = $rec;
+        }
     }
 } else {
-    if ($till->format("Y-m-d") === $fran->format("Y-m-d")) {
+    if ($to->format("Y-m-d") === $from->format("Y-m-d")) {
         $out = new stdClass();
-        $out->error = ["Inga rader matchar angivet datumintervall"];
-        skickaJSON($out, 400);
+        $out->message = ["Inga rader matchar angivet datumintervall"];
+        skickaJSON($out);
     }
-    $out->uppgifter = [];
-    $date = $fran;
-    while ($date < $till) {
+    $out->tasks = [];
+    $date = $from;
+    $id = rand(1, 15);
+    while ($date < $to) {
         $i = rand(1, 15);
         $rec = new stdClass();
-        $rec->id = ++$i;
-        $rec->uppgiftId = $i % count($duties);
-        $rec->uppgift = $duties[$i % count($duties)];
-        $rec->datum = $date->format("Y-m-d");
-        $rec->tid = date("h:i", strtotime(rand(3, 8) * 15 . " minutes"));
-        $rec->beskrivning = "Fritext ";
-        $out->uppgifter[] = $rec;
+        $rec->id = $id++;
+        $rec->activityId = $i % count($activities);
+        $rec->activity = $activities[$i % count($activities)];
+        $rec->date = $date->format("Y-m-d");
+        $rec->time = date("G:i", mktime(0, rand(3, 8) * 15));
+        $rec->description = "Fritext ";
+        $out->tasks[] = $rec;
         $date = $date->add(new DateInterval("P{$i}D"));
     }
 }

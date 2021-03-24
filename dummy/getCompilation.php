@@ -3,28 +3,38 @@
 declare (strict_types=1);
 require_once 'funktioner.php';
 
+if ($_SERVER['REQUEST_METHOD'] === "POST") {
+    $error = new stdClass();
+    $error->error = ["Felaktigt anrop", "Metoden GET ska användas vid anrop till sidan"];
+    skickaJSON($error, 405);
+}
+
 // Kontrollera indata
 $error = [];
-if (isset($_GET['till']) && $_GET['till'] !== "") {
-    $in = filter_input(INPUT_GET, "till", FILTER_SANITIZE_STRING);
-    if (($till = date_create_immutable($in)) === false) {
-        $error[] = "Felaktigt datum för 'till'";
+if (isset($_GET['to']) && $_GET['to'] !== "") {
+    $in = filter_input(INPUT_GET, "to", FILTER_SANITIZE_STRING);
+    if (($to = date_create_from_format("Y-m-d", $in)) === false) {
+        $error[] = "Felaktigt datum för 'to'";
+    } elseif ($to->format('Y-m-d') != $in) {
+        $error[] = "Felaktigt angivet datum för 'to'";
     }
 } else {
-    $error[] = "'till' saknas";
-    $till = false;
+    $error[] = "'to' saknas";
+    $to = false;
 }
-if (isset($_GET['fran']) && $_GET['fran'] !== "") {
-    $in = filter_input(INPUT_GET, "fran", FILTER_SANITIZE_STRING);
-    if (($fran = date_create_immutable($in)) === false) {
-        $error[] = "Felaktigt datum för 'fran'";
+if (isset($_GET['from']) && $_GET['from'] !== "") {
+    $in = filter_input(INPUT_GET, "from", FILTER_SANITIZE_STRING);
+    if (($from = date_create_from_format("Y-m-d", $in)) === false) {
+        $error[] = "Felaktigt datum för 'from'";
+    } elseif ($from->format('Y-m-d') != $in) {
+        $error[] = "Felaktigt angivet datum för 'from'";
     }
 } else {
-    $error[] = "'fran' saknas";
-    $fran = false;
+    $error[] = "'from' saknas";
+    $from = false;
 }
-if ($till && $fran && $till < $fran) {
-    $error[] = "'till' ska vara större än 'fran'";
+if ($to && $from && $to < $from) {
+    $error[] = "'to' ska vara större än 'from'";
 }
 
 // Indata fel?
@@ -35,16 +45,17 @@ if (count($error) > 0) {
     skickaJSON($fel, 400);
 }
 
-if ($$till === $fran) {
-    $out = new stdClass();
-    $out->error = ["Inga rader matchar angivet datumintervall"];
-    skickaJSON($out, 400);
+$out = new stdClass();
+if ($to->format('Y-m-d') === $from->format('Y-m-d')) {
+    $out->message = ["Inga rader matchar angivet datumintervall"];
+    skickaJSON($out);
 }
-$out->uppgift = [];
-for ($i = 0; $i < count($duties); $i++) {
+$out->tasks = [];
+for ($i = 0; $i < count($activities); $i++) {
     $rec = new stdClass();
-    $rec->uppgiftId = $i;
-    $rec->uppgift = $duties[$i];
-    $rec->tid = date("h:i", strtotime(rand(0, 20) * 15 . " minutes"));
-    $out->uppgift[] = $rec;
+    $rec->activityId = $i;
+    $rec->activity = $activities[$i];
+    $rec->time = date("G:i",  mktime(0, rand(3, 8) * 15));
+    $out->tasks[] = $rec;
 }
+skickaJSON($out);

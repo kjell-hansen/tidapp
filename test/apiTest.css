@@ -1,0 +1,37 @@
+* {
+    box-sizing: border-box;
+}
+html, body {
+    margin:0;
+}
+header {
+    position: sticky;
+    top: 0;
+    background-color: white;
+}
+
+#resultat {
+    display: flex;
+    display: none;
+    flex-wrap: wrap;
+}
+#resultat > div {
+    margin: 5px;
+    border: 1px solid black;
+    padding: 2px;    
+}
+h2 {
+    margin: 0 auto;
+    white-space: nowrap;
+}
+p {
+    margin:5px;
+}
+p.error {
+    color: darkred;
+    background-color: lightpink;
+}
+p.ok {
+    color: darkgreen;
+    background-color: lightgreen;
+}

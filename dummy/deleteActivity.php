@@ -10,8 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] !== "POST") {
 }
 
 if (isset($_POST['id'])) {
-    $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_STRING);
-    if (!$id == (string) intval($id) || $id < 1) {
+    $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+    if ($id===false || $id < 0) {
         $error = new stdClass();
         $error->error = ["Felaktig indata", "Ogiltigt 'id'"];
         skickaJSON($error, 400);
@@ -22,15 +22,13 @@ if (isset($_POST['id'])) {
     skickaJSON($error, 400);
 }
 
-if ($id > 100) {
-    $error = new stdClass();
-    $error->error[] = "Fel vid radera";
-    $error->error[] = "id=$id saknas";
-    skickaJSON($error, 400);
+$svar = new stdClass();
+if ($id > count($activities)) {
+    $svar->message = ["id=$id saknas"];
+    $svar->result = false;
 } else {
-    $svar = new stdClass();
-    $svar->resultat = true;
-    $svar->meddelande = ["1 post(er) raderades"];
-    skickaJSON($svar);
+    $svar->result = true;
+    $svar->message = ["1 post(er) raderades"];
 }
+skickaJSON($svar);
 

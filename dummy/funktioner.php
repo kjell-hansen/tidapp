@@ -1,7 +1,7 @@
 <?php
 
 declare (strict_types=1);
-$duties = ["Slappat", "Kodat frontend", "Slötittat på YouTube", "Kodat backend", "Felsökt frontend", "Felsökt backend", "Kaffepaus", "Sökt information på nätet"];
+$activities = ["Slappat", "Kodat frontend", "Slötittat på YouTube", "Kodat backend", "Felsökt frontend", "Felsökt backend", "Kaffepaus", "Sökt information på nätet"];
 
 function kopplaDB() {
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_ALL); // Set MySQLi to throw exceptions 
