@@ -13,11 +13,12 @@ if ($_SERVER['REQUEST_METHOD'] !== "POST") {
 $error = [];
 if (isset($_GET['id'])) {
     $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-    if ($id===false || $id < 0) {
+    if ($id === false || $id < 0) {
         $error[] = "Ogiltigt id ($id)";
     }
 }
 
+$db = kopplaTestDB();
 if (!isset($_POST['activity'])) {
     $error[] = "'activity' saknas";
 } else {
@@ -25,13 +26,24 @@ if (!isset($_POST['activity'])) {
     if ($uppgift === "") {
         $error[] = "'activity' får inte vara tom";
     }
-    if (isset($id) && $id!==false) {
+    if (isset($id) && $id !== false) {
         if ($id < 0) {
             $error[] = "Ogiltigt id";
-        } elseif ($id < count($activities) && $activities[$id] != $uppgift && in_array($uppgift, $activities)) {
-            $error[] = "'activity' finns redan för annat 'id'";
-        } elseif ($id > count($activities)) {
-            $error[] = "Angivet 'id' saknas ($id)";
+        } else {
+            $sql = 'SELECT * from activities where activity=:activity and id<>:id';
+            $stmt = $db->prepare($sql);
+            $stmt->execute(['id' => $id, 'activity' => $uppgift]);
+            if ($stmt->fetch()!==false) {
+                $error[] = "'activity' ($uppgift) finns redan för annat 'id'";
+            } else {
+                $sql = 'SELECT * from activities where id=:id';
+                $stmt = $db->prepare($sql);
+                $stmt->execute(['id' => $id]);
+                if (count($stmt->fetchAll()) === 0) {
+                    $error[] = "Angivet 'id' saknas ($id)";
+                    $error[]=$db->errorInfo();
+                }
+            }
         }
     }
 }
@@ -44,25 +56,34 @@ if (count($error) > 0) {
     skickaJSON($fel, 400);
 }
 
+
 if (isset($id)) {
-    if ($id < count($activities) && $activities[$id] == $uppgift) {
+    $sql = "UPDATE activities SET activity=:activity WHERE id=:id";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(['id' => $id, 'activity' => $uppgift]);
+    $antal = $stmt->rowCount();
+    if ($antal === 0) {
         $svar = new stdClass();
         $svar->result = false;
-        $svar->message = ["Spara misslyckades", "Inga poster uppdaterades"];
+        $svar->message = ["Uppdatera misslyckades", "Inga poster uppdaterades"];
         skickaJSON($svar);
     } else {
         $svar = new stdClass();
         $svar->result = true;
-        $svar->message = ["Spara gick bra", "1 post(er) uppdaterades"];
+        $svar->message = ["Uppdatera gick bra", "$antal post(er) uppdaterades"];
         skickaJSON($svar);
     }
 } else {
+    $sql = "INSERT INTO activities (activity) VALUES (:activity)";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(['activity' => $uppgift]);
+    $antal = $stmt->rowCount();
     if (in_array($uppgift, $activities)) {
         $error = new stdClass();
-        $error->error = ["Fel vid spara", "Uppgiften finns redan"];
+        $error->error = array_merge(["Fel vid spara"], $stmt->errorInfo());
         skickaJSON($error, 400);
     } else {
-        $nyID = rand(30, 50);
+        $nyID = $db->lastInsertId();
         $svar = new stdClass();
         $svar->message = ["Spara lyckades"];
         $svar->id = $nyID;

@@ -9,7 +9,14 @@ header {
     top: 0;
     background-color: white;
 }
-
+header > div, aside {
+    display: inline-block;
+    width: 45%;
+    vertical-align: top;
+}
+aside {
+    border: 1px solid blue;
+}
 #resultat {
     display: flex;
     display: none;

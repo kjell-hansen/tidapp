@@ -48,3 +48,10 @@ function getStatusMeddelande(int $status): string {
             throw new Exception("Okänt felnummer ($status)");
     }
 }
+
+function kopplaTestDB() {
+    $db= new PDO('sqlite:../databas/test.db');
+    $db->query('PRAGMA foreign_keys = ON;');
+
+    return $db;
+}

@@ -10,12 +10,22 @@
     <body>
         <header>
             <h1>Tidapp, API-tester</h1>
-            <p>api-sökväg: <input type="text" id="api" size="50"><br>
+            <div>            <p>api-sökväg: <input type="text" id="api" size="50"><br>
                 url: <select id="url">
-                    <option>* (all)</option>
+                    <option value="*">* (all)</option>
                 </select><br>
+                <a href="../databas/makeTestDB.php" download="test.db">Ladda ner testDB</a> <br>
                 <input type="button" id="testKnapp" value="Testa"></p>
             <p id="testResultat"></p>
+            </div>
+        <aside>
+            <h2>Info</h2>
+            <p>Ladda ner <a href="../databas/makeTestDB.php" download="test.db">testdatabasen</a> till en valfri plats på din dator. Kopiera sedan in den till <i>en annan mapp</i> inför varje testkörning.<br>
+                Se till att Dina filer använder sig av testdatabasen för att hämta och skriva poster eftersom Du knappast har samma uppsättning av poster som testas mot.                
+            </p>
+            <p>Du kan testa mot ett enskilt script eller mot alla script, notera också att scripten behöver heta samma sak som texterna i drop-downboxen.</p>
+            <p>Lycka till ;)</p>
+        </aside>
         </header>
         <main>
             <div id="resultat"></div>

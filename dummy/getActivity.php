@@ -23,8 +23,16 @@ if ($id < 1) {
     skickaJSON($out, 400);
 }
 
-if ($id < 100) {
-    $rec = new stdClass();
+$db = kopplaTestDB();
+$sql = "SELECT * from activities where id=:id";
+$stmt = $db->prepare($sql);
+if (!$stmt->execute(['id' => $id])) {
+    $out = new stdClass();
+    $out->error = array_merge("Felaktigt databasanrop", $db->errorInfo());
+    skickaJSON($out, 400);
+}
+
+if ($rec = $stmt->fetchObject()) {
     $rec->id = $id;
     $rec->activity = $activities[$id % count($activities)];
     skickaJSON($rec);

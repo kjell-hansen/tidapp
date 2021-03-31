@@ -9,14 +9,19 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     $error->error = ["Felaktigt anrop", "Metoden GET ska användas vid anrop till sidan"];
     skickaJSON($error, 405);
 }
-
 $out = new stdClass();
+
+$db = kopplaTestDB();
+$sql = "SELECT * from activities";
+$stmt = $db->prepare($sql);
+if (!$stmt->execute()) {
+    $out->error = array_merge("Felaktigt databasanrop", $db->errorInfo());
+    skickaJSON($out, 400);
+}
+
 $out->activities = [];
-for ($i = 0; $i < count($activities); $i++) {
-    $activity = new stdClass();
-    $activity->id = $i;
-    $activity->activity = $activities[$i];
-    $out->activities[] = $activity;
+while ($rec = $stmt->fetchObject()) {
+    $out->activities[] = $rec;
 }
 
 skickaJSON($out);

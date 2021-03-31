@@ -1,10 +1,10 @@
 testCases = [
     // Hämta aktivitet OK!
     {name: 'Hämta enskild aktivitet ok',
-        url: 'getActivity.php?id=10',
+        url: 'getActivity.php?id=5',
         method: 'GET',
         status: 200,
-        result: {id: 10, activity: '?'}
+        result: {id: 5, activity: '?'}
     },
     // Hämta aktivitet, fel!
     {name: 'Hämta enskild aktivitet ok',
@@ -69,16 +69,9 @@ testCases = [
     {name: 'Uppdatera aktivitet (ok)',
         url: 'saveActivity.php?id=1',
         method: 'POST',
-        data: fdNewActivity(),
+        data: fdUpdateActivity(),
         status: 200,
         result: {result: true, message: '?'}
-    },
-    {name: 'Uppdatera aktivitet (ingen förändring)',
-        url: 'saveActivity.php?id=1',
-        method: 'POST',
-        data: fdActivity(),
-        status: 200,
-        result: {result: false, message: '?'}
     },
     // Uppdatera aktivitet, fel!
     {name: 'Uppdatera aktivitet (fel metod)',
@@ -125,18 +118,25 @@ testCases = [
     {name: 'Radera aktivitet ok',
         url: 'deleteActivity.php',
         method: 'POST',
-        data: fdActivity(),
+        data: fdNewActivity(),
         status: 200,
         result: {result: true, message: '?'}
+    },
+    // Radera aktivitet, fel!
+    {name: 'Radera aktivitet (id används i annan tabell)',
+        url: 'deleteActivity.php',
+        method: 'POST',
+        data: fdActivity(),
+        status: 200,
+        result: {result: false, message: '?'}
     },
     {name: 'Radera aktivitet (id finns inte)',
         url: 'deleteActivity.php',
         method: 'POST',
         data: fdActivityDontExists(),
-        status: 200,
-        result: {result: false, message: '?'}
+        status: 400,
+        result: {error: '?'}
     },
-    // Radera aktivitet, fel!
     {name: 'Radera aktivitet (fel metod)',
         url: 'deleteActivity.php',
         method: 'GET',
@@ -422,13 +422,6 @@ testCases = [
         status: 200,
         result: {result: true, message: '?'}
     },
-    {name: 'Uppdatera uppgift (ok)',
-        url: 'saveTask.php?id=60',
-        method: 'POST',
-        data: fdTask(),
-        status: 200,
-        result: {result: false, message: '?'}
-    },
     // Radera uppgift
     {name: 'Radera uppgift (ok)',
         url: 'deleteTask.php',
@@ -471,9 +464,9 @@ testCases = [
         status: 200,
         result: {result: false, message: '?'}
     },
-    
+
     // Hämta sammanställning
-        {name: 'Hämta uppgiftslista ok',
+    {name: 'Hämta uppgiftslista ok',
         url: 'getCompilation.php?from=2020-02-02&to=2020-03-03',
         method: 'GET',
         status: 200,
@@ -485,7 +478,7 @@ testCases = [
         status: 200,
         result: {message: '?'}
     },
-{name: 'Hämta uppgiftslista (to saknas)',
+    {name: 'Hämta uppgiftslista (to saknas)',
         url: 'getCompilation.php?from=2020-02-02',
         method: 'GET',
         status: 400,
@@ -531,14 +524,21 @@ testCases = [
 
 function fdActivity() {
     let fd = new FormData();
-    fd.append('id', 1);
-    fd.append('activity', 'Kodat frontend');
+    fd.append('id', 4);
+    fd.append('activity', 'Kodat backend');
     return fd;
 }
 ;
 function fdNewActivity() {
     let fd = new FormData();
+    fd.append('id', '9');
     fd.append('activity', 'test');
+    return fd;
+}
+;
+function fdUpdateActivity() {
+    let fd = new FormData();
+    fd.append('activity', 'Städat badrummet');
     return fd;
 }
 ;
@@ -569,30 +569,30 @@ function fdActivityBadId2() {
 function fdTask() {
     let fd = new FormData();
     fd.append('id', 10);
-    fd.append('activityId', 1);
-    fd.append('date', new Date().toISOString().substr(0,10));
+    fd.append('activityId', 3);
+    fd.append('date', new Date().toISOString().substr(0, 10));
     fd.append('time', "3:15");
     fd.append('description', 'testCase');
     return fd;
 }
 function fdNewTask() {
     let fd = new FormData();
-    fd.append('activityId', 1);
-    fd.append('date', new Date().toISOString().substr(0,10));
+    fd.append('activityId', 3);
+    fd.append('date', new Date().toISOString().substr(0, 10));
     fd.append('time', "3:15");
     fd.append('description', 'testCase');
     return fd;
 }
 function fdNewTask_NoDescription() {
     let fd = new FormData();
-    fd.append('activityId', 1);
-    fd.append('date', new Date().toISOString().substr(0,10));
+    fd.append('activityId', 3);
+    fd.append('date', new Date().toISOString().substr(0, 10));
     fd.append('time', "3:15");
     return fd;
 }
 function fdNewTask_NoDate() {
     let fd = new FormData();
-    fd.append('activityId', 1);
+    fd.append('activityId', 3);
     fd.append('time', "3:15");
     fd.append('description', 'testCase');
     return fd;
@@ -600,7 +600,7 @@ function fdNewTask_NoDate() {
 
 function fdNewTask_BadDate1() {
     let fd = new FormData();
-    fd.append('activityId', 1);
+    fd.append('activityId', 3);
     fd.append('date', new Date().toISOString());
     fd.append('time', "3:15");
     fd.append('description', 'testCase');
@@ -609,7 +609,7 @@ function fdNewTask_BadDate1() {
 
 function fdNewTask_BadDate2() {
     let fd = new FormData();
-    fd.append('activityId', 1);
+    fd.append('activityId', 3);
     fd.append('date', '2021-02-31');
     fd.append('time', "3:15");
     fd.append('description', 'testCase');
@@ -618,16 +618,16 @@ function fdNewTask_BadDate2() {
 
 function fdNewTask_NoTime() {
     let fd = new FormData();
-    fd.append('activityId', 1);
-    fd.append('date', new Date().toISOString().substr(0,10));
+    fd.append('activityId', 3);
+    fd.append('date', new Date().toISOString().substr(0, 10));
     fd.append('description', 'testCase');
     return fd;
 }
 
 function fdNewTask_BadTime1() {
     let fd = new FormData();
-    fd.append('activityId', 1);
-    fd.append('date', new Date().toISOString().substr(0,10));
+    fd.append('activityId', 3);
+    fd.append('date', new Date().toISOString().substr(0, 10));
     fd.append('time', "33:15");
     fd.append('description', 'testCase');
     return fd;
@@ -636,7 +636,7 @@ function fdNewTask_BadTime1() {
 function fdNewTask_BadTime2() {
     let fd = new FormData();
     fd.append('activityId', 1);
-    fd.append('date', new Date().toISOString().substr(0,10));
+    fd.append('date', new Date().toISOString().substr(0, 10));
     fd.append('time', "3:69");
     fd.append('description', 'testCase');
     return fd;
@@ -644,16 +644,16 @@ function fdNewTask_BadTime2() {
 
 function fdNewTask_BadTime3() {
     let fd = new FormData();
-    fd.append('activityId', 1);
-    fd.append('date', new Date().toISOString().substr(0,10));
+    fd.append('activityId', 3);
+    fd.append('date', new Date().toISOString().substr(0, 10));
     fd.append('time', "BadTime");
     fd.append('description', 'testCase');
     return fd;
 }
 function fdNewTask_BadTime4() {
     let fd = new FormData();
-    fd.append('activityId', 1);
-    fd.append('date', new Date().toISOString().substr(0,10));
+    fd.append('activityId', 3);
+    fd.append('date', new Date().toISOString().substr(0, 10));
     fd.append('time', "BadTime");
     fd.append('description', 'testCase');
     return fd;
@@ -661,7 +661,7 @@ function fdNewTask_BadTime4() {
 function fdNewTask_BadActivity1() {
     let fd = new FormData();
     fd.append('activityId', 'tre');
-    fd.append('date', new Date().toISOString().substr(0,10));
+    fd.append('date', new Date().toISOString().substr(0, 10));
     fd.append('time', "BadTime");
     fd.append('description', 'testCase');
     return fd;
@@ -669,7 +669,7 @@ function fdNewTask_BadActivity1() {
 function fdNewTask_BadActivity2() {
     let fd = new FormData();
     fd.append('activityId', -1);
-    fd.append('date', new Date().toISOString().substr(0,10));
+    fd.append('date', new Date().toISOString().substr(0, 10));
     fd.append('time', "BadTime");
     fd.append('description', 'testCase');
     return fd;
@@ -677,7 +677,7 @@ function fdNewTask_BadActivity2() {
 function fdNewTask_BadActivity3() {
     let fd = new FormData();
     fd.append('activityId', 110);
-    fd.append('date', new Date().toISOString().substr(0,10));
+    fd.append('date', new Date().toISOString().substr(0, 10));
     fd.append('time', "BadTime");
     fd.append('description', 'testCase');
     return fd;

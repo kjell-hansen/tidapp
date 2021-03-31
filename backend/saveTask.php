@@ -48,16 +48,16 @@ if (isset($_POST['time']) && $_POST['time'] !== "") {
     $error[] = "'time' saknas";
 }
 
-$dutyid = (int) filter_input(INPUT_POST, "dutyId", FILTER_SANITIZE_NUMBER_INT);
-if ($dutyid < 1) {
+$activityId  = (int) filter_input(INPUT_POST, "dutyId", FILTER_SANITIZE_NUMBER_INT);
+if ($activityId  < 1) {
     $error[] = "Felaktigt dutyId";
 } else {
-    $sql = "SELECT id FROM duties WHERE id=$dutyid";
+    $sql = "SELECT id FROM duties WHERE id=$activityId ";
     if (!($resultat = $db->query($sql)) || $resultat->num_rows !== 1) {
-        $error[] = "Angivet DutyId ($dutyid) saknas";
+        $error[] = "Angivet DutyId ($activityId ) saknas";
     }
 }
-$beskrivning = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
+$description  = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
 
 // Finns GET-data (dvs uppdatering av post!)
 if (isset($_GET['id'])) {
@@ -83,8 +83,8 @@ if (count($error) > 0) {
 
 // Uppdatera? OK?
 if (isset($id)) {
-    $sql = "UPDATE tasks set dutyid=$dutyid, datum='" . $datum->format('Y-m-d') . "',"
-            . " tid='" . $tid->format("H:i") . "', beskrivning='$beskrivning'"
+    $sql = "UPDATE tasks set dutyid=$activityId , datum='" . $datum->format('Y-m-d') . "',"
+            . " tid='" . $tid->format("H:i") . "', beskrivning='$description '"
             . " WHERE id=$id";
     if ($db->query($sql) && $db->affected_rows > 0) {
         $out = new stdClass();
@@ -102,8 +102,8 @@ if (isset($id)) {
 
 // Infoga OK?
 $sql = "INSERT INTO tasks (dutyid, datum, tid, beskrivning) VALUES"
-        . "($dutyid, '" . $datum->format('Y-m-d') . "', '" . $tid->format("H:i") . "'"
-        . ", '$beskrivning')";
+        . "($activityId , '" . $datum->format('Y-m-d') . "', '" . $tid->format("H:i") . "'"
+        . ", '$description ')";
 if ($db->query($sql) && $db->affected_rows > 0) {
     $id = $db->insert_id;
     $out = new stdClass();

@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] !== "POST") {
 
 if (isset($_POST['id'])) {
     $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
-    if ($id < 1) {
+    if ($id==false || $id < 1) {
         $error = new stdClass();
         $error->error = ["Felaktig indata", "Ogiltigt 'id'"];
         skickaJSON($error, 400);

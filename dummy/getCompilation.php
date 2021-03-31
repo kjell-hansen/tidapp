@@ -44,18 +44,22 @@ if (count($error) > 0) {
     $fel->error = $error;
     skickaJSON($fel, 400);
 }
+$db = kopplaTestDB();
+
+$sql = "SELECT activityId, a.activity, sum(time) as time FROM tasks t INNER JOIN activities a ON a.id=t.activityid WHERE t.date BETWEEN :from AND :to  GROUP BY activityId ";
+$stmt = $db->prepare($sql);
+$stmt->execute(['from' => $from->format('Y-m-d'), 'to' => $to->format('Y-m-d')]);
 
 $out = new stdClass();
-if ($to->format('Y-m-d') === $from->format('Y-m-d')) {
+$out->tasks = [];
+while ($rec = $stmt->fetchObject()) {
+    $out->tasks[] = $rec;
+}
+
+if (count($out->tasks) === 0) {
+    $out = new stdClass();
     $out->message = ["Inga rader matchar angivet datumintervall"];
     skickaJSON($out);
 }
-$out->tasks = [];
-for ($i = 0; $i < count($activities); $i++) {
-    $rec = new stdClass();
-    $rec->activityId = $i;
-    $rec->activity = $activities[$i];
-    $rec->time = date("G:i",  mktime(0, rand(3, 8) * 15));
-    $out->tasks[] = $rec;
-}
+
 skickaJSON($out);

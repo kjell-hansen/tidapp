@@ -16,9 +16,9 @@ if (isset($_POST['date']) && $_POST['date'] !== "") {
     $in = filter_input(INPUT_POST, "date", FILTER_SANITIZE_STRING);
     if (($datum = date_create_from_format("Y-m-d", $in)) === false) {
         $error[] = "Felaktigt 'date'";
-    }elseif ($datum->format('Y-m-d') != $in) {
-            $error[] = "Felaktigt angivet 'date'";
-        }
+    } elseif ($datum->format('Y-m-d') != $in) {
+        $error[] = "Felaktigt angivet 'date'";
+    }
 } else {
     $error[] = "'date' saknas";
 }
@@ -31,7 +31,7 @@ if (isset($_POST['time']) && $_POST['time'] !== "") {
     } else {
         if (($tid = date_create_from_format('H:i', $in)) === false) {
             $error[] = "Felaktig 'time'";
-        }elseif ($tid->format('G:i') != $in) {
+        } elseif ($tid->format('G:i') != $in) {
             $error[] = "Felaktigt angiven 'time'";
         }
         if ($tid && $tid->format("H:i") > "08:00") {
@@ -42,23 +42,31 @@ if (isset($_POST['time']) && $_POST['time'] !== "") {
     $error[] = "'time' saknas";
 }
 
-$activityId = filter_input(INPUT_POST, "activityId ", FILTER_VALIDATE_INT);
-if ($activityId ===false || $activityId < 0) {
+$db = kopplaTestDB();
+
+$activityId = filter_input(INPUT_POST, "activityId", FILTER_VALIDATE_INT);
+if (!$activityId || $activityId < 0) {
     $error[] = "Felaktig 'activityId'";
 } else {
-    if ($activityId > 100) {
-        $error[] = "Angiven 'activityId' ($activityId ) saknas";
+    $sql = "SELECT * from activities where id=:id";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(['id' => $activityId]);
+    if (!$stmt->fetch()) {
+        $error[] = "Angivet aktivitets id ($activityId) saknas";
     }
 }
-$description = filter_input(INPUT_POST, 'description ', FILTER_SANITIZE_STRING);
+$description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
 
 // Finns GET-data (dvs uppdatering av post!)
 if (isset($_GET['id'])) {
     $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-    if ($id < 1) {
+    if ($id < 0) {
         $error[] = "Felaktigt id ($id) angivet";
     } else {
-        if ($id > 100) {
+        $sql = "SELECT * from tasks where id=:id";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(['id' => $id]);
+        if (!$stmt->fetch()) {
             $error[] = "Angivet id ($id) saknas";
         }
     }
@@ -75,17 +83,31 @@ if (count($error) > 0) {
 // Uppdatera? OK?
 if (isset($id)) {
     $out = new stdClass();
-    if ($id > 50) {
+    $sql = "UPDATE tasks SET activityid=:activityid, time=:time, date=:date, description=:description where id=:id";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(['id' => $id, 'activityid' => $activityId, 'time' => $tid->format('G:i'), 'date' => $datum->format('Y-m-d'), 'description' => $description]);
+    $antalPoster = $stmt->rowCount();
+    if ($antalPoster === 0) {
         $out->result = false;
         $out->message = ["Inga förändringar i posten", "0 rad(er) uppdaterades"];
     } else {
         $out->result = true;
-        $out->message = ["Spara gick bra", "1 rad(er) uppdaterades"];
+        $out->message = ["Spara gick bra", "$antalPoster rad(er) uppdaterades"];
     }
 } else {
-    $id = rand(30, 50);
-    $out = new stdClass();
-    $out->message = ["Spara gick bra"];
-    $out->id = $id;
+    $sql = "INSERT INTO tasks (activityid, time, date, description) VALUES (:activityid, :time, :date, :description)";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(['activityid' => $activityId, 'time' => $tid->format('G:i'), 'date' => $datum->format('Y-m-d'), 'description' => $description]);
+    $antalPoster = $stmt->rowCount();
+    if ($antalPoster === 1) {
+        $out = new stdClass();
+        $out->message = ["Spara gick bra"];
+        $out->id = $db->lastInsertId();
+    } else {
+        $out = new stdClass();
+        $out->error = array_merge(["Spara misslyckades", "$antalPoster uppdaterades"], $stmt->errorInfo());
+        skickaJSON($out, 400);
+    }
 }
+
 skickaJSON($out);

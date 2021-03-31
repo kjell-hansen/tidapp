@@ -6,29 +6,38 @@ window.onload = function () {
         addTestToCombo(test);
     }
 };
-
 function doTest() {
     document.getElementById('resultat').innerHTML = '';
     tR = document.getElementById('testResultat');
     tR.innerHTML = '';
     testOK = 0;
     testFail = 0;
-    let tc = document.getElementById('testCases');
-    let parent = tc.parentNode;
-    tc.parentNode.removeChild(tc);
-    tc = document.createElement('script');
-    tc.setAttribute('id', 'testCases');
-    tc.setAttribute('src', 'testCases.js');
-    parent.appendChild(tc);
-    tc.addEventListener('load', function () {
-        testFile = document.getElementById('url').value;
-        for (let test of testCases) {
-            if (testFile == '*' || test.url.startsWith(testFile)) {
-                appendTest(test);
-            } 
-            addTestToCombo(test);
-        }
+
+    var p1 = new Promise((resolve, reject) => {
+        let tc = document.getElementById('testCases');
+        let parent = tc.parentNode;
+        tc.parentNode.removeChild(tc);
+        tc = document.createElement('script');
+        tc.setAttribute('id', 'testCases');
+        tc.setAttribute('src', 'testCases.js');
+        parent.appendChild(tc);
+        resolve(tc.addEventListener('load', function () {
+            Promise.resolve('Load resolved');
+        }));
     });
+    Promise.all([p1])
+            .then(() => {
+                testFile = document.getElementById('url').value;
+                for (let test of testCases) {
+                    if (testFile == '*' || test.url.startsWith(testFile)) {
+                        appendTest(test);
+                    }
+                    addTestToCombo(test);
+                }
+            })
+            .catch(error => {
+                alert('Kunde inte ladda nödvändiga script för att köra testerna.\n' + error)
+            });
 }
 
 function appendTest(testCase) {
@@ -105,7 +114,7 @@ function sendTest(testCase, tag) {
                 if (testCase.result[field] === '?' && data[field] != undefined) {
                     returnText += field + ":" + data[field] + "<br>";
                 } else {
-                    if (testCase.result[field] !== data[field] || data[field] == undefined) {
+                    if (testCase.result[field] != data[field] || data[field] == undefined) {
                         returnText += field + ":" + data[field] + " <= INVALID expected " + testCase.result[field] + "<br>";
                         tag.className = 'error';
                     } else {
@@ -124,7 +133,6 @@ function sendTest(testCase, tag) {
 function addTestToCombo(test) {
     let tmpUrl = test.url;
     let url = tmpUrl.substr(0, tmpUrl.indexOf('.php') + 4);
-
     let sel = document.getElementById('url');
     for (let i = 0; i < sel.options.length; i++) {
         if (sel.options[i].text === url) {

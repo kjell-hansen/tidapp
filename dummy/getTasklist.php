@@ -41,7 +41,7 @@ if (!isset($page)) {
         $in = filter_input(INPUT_GET, "from", FILTER_SANITIZE_STRING);
         if (($from = date_create_from_format("Y-m-d", $in)) === false) {
             $error[] = "Felaktigt datum för 'from'";
-        }elseif ($from->format('Y-m-d') != $in) {
+        } elseif ($from->format('Y-m-d') != $in) {
             $error[] = "Felaktigt angivet datum för 'from'";
         }
     } else {
@@ -61,48 +61,54 @@ if (count($error) > 0) {
     skickaJSON($fel, 400);
 }
 
+$db = kopplaTestDB();
 $out = new stdClass();
+
 if (isset($page)) {
-    if ($page > 100) {
+    $sql = "SELECT COUNT(*) FROM tasks";
+    $stmt = $db->query($sql);
+    $row = $stmt->fetch(PDO::FETCH_NUM);
+    $antalPoster = (int) $row[0];
+    $antalSidor = ceil($antalPoster / $posterPerSida);
+    if ($page > $antalSidor) {
         $out = new stdClass();
-        $out->pages = 100;
+        $out->pages = $antalSidor;
         $out->message = ["Otillräckligt antal poster för att visa sidan"];
         skickaJSON($out);
     } else {
-        $page < 100 ? $out->pages = ++$page : $out->pages = 100;
-        $recFrom = ($page - 1) * $posterPerSida + 1;
+
+        $sql = "SELECT t.*, a.activity FROM tasks t INNER JOIN activities a ON a.id=t.activityid LIMIT " . $posterPerSida * ($page - 1) . ",$posterPerSida";
+        $stmt = $db->prepare($sql);
+        if (!$stmt->execute()) {
+            $out->error = array_merge("Felaktigt databasanrop", $db->errorInfo());
+            skickaJSON($out, 400);
+        }
+
+        $out->pages = $antalSidor;
         $out->tasks = [];
-        for ($i = 0; $i < $posterPerSida; $i++) {
-            $rec = new stdClass();
-            $rec->id = $recFrom + $i;
-            $rec->activityId = $i % count($activities);
-            $rec->activity = $activities[$i % count($activities)];
-            $rec->date = date("Y-m-d", strtotime("-$i days"));
-            $rec->time = date("G:i", mktime(0, rand(3, 8) * 15));
-            $rec->description = "Fritext ";
+        while ($rec = $stmt->fetchObject()) {
+            $rec->time = date("Y-m-d", strtotime($rec->date));
+            $rec->time = date("G:i", strtotime($rec->time));
             $out->tasks[] = $rec;
         }
     }
 } else {
-    if ($to->format("Y-m-d") === $from->format("Y-m-d")) {
+    $sql = "SELECT t.*, a.activity FROM tasks t INNER JOIN activities a ON a.id=t.activityid where t.date BETWEEN :from AND :to";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(['from' => $from->format('Y-m-d'), 'to' => $to->format('Y-m-d')]);
+
+    $out->tasks = [];
+    while ($rec = $stmt->fetchObject()) {
+        $rec->time = date("Y-m-d", strtotime($rec->date));
+        $rec->time = date("G:i", strtotime($rec->time));
+        $out->tasks[] = $rec;
+    }
+
+    if (count($out->tasks) === 0) {
         $out = new stdClass();
         $out->message = ["Inga rader matchar angivet datumintervall"];
         skickaJSON($out);
     }
-    $out->tasks = [];
-    $date = $from;
-    $id = rand(1, 15);
-    while ($date < $to) {
-        $i = rand(1, 15);
-        $rec = new stdClass();
-        $rec->id = $id++;
-        $rec->activityId = $i % count($activities);
-        $rec->activity = $activities[$i % count($activities)];
-        $rec->date = $date->format("Y-m-d");
-        $rec->time = date("G:i", mktime(0, rand(3, 8) * 15));
-        $rec->description = "Fritext ";
-        $out->tasks[] = $rec;
-        $date = $date->add(new DateInterval("P{$i}D"));
-    }
 }
+
 skickaJSON($out);
