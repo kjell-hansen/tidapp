@@ -32,6 +32,7 @@ if(!$stmt->execute(['id'=>$id])) {
 }
 
 if ($rec=$stmt->fetchObject()) {
+    $rec->time= minuterTillTid((int)$rec->time);
     skickaJSON($rec);
 } else {
     $out = new stdClass();

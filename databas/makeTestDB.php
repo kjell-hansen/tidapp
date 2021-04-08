@@ -4,7 +4,7 @@ declare (strict_types=1);
 $activities = ["Slappat", "Kodat frontend", "Slötittat på YouTube", "Kodat backend", "Felsökt frontend", "Felsökt backend", "Kaffepaus", "Sökt information på nätet"];
 unlink('./test.db');
 
-$db = new PDO('sqlite:./test.db');
+$db = new PDO('sqlite:./test.db','charset=UTF8');
 $db->query('PRAGMA foreign_keys = ON;');
 
 $db->query('CREATE TABLE "activities" (
@@ -15,7 +15,7 @@ $db->query('CREATE TABLE "activities" (
 $db->query('CREATE TABLE "tasks" (
 	"id"	INTEGER NOT NULL,
 	"activityId"	INTEGER NOT NULL,
-	"time"	TEXT NOT NULL,
+	"time"	INTEGER NOT NULL,
 	"date"	TEXT NOT NULL,
 	"description"	TEXT,
 	PRIMARY KEY("id" AUTOINCREMENT),
@@ -36,7 +36,7 @@ for ($ix = 0; $ix < 70; $ix++) {
     $rec["id"] = $ix+1;
     $rec["activityId"] = $i % count($activities)+1;
     $rec["date"] = $date->format("Y-m-d");
-    $rec["time"] = date("G:i", mktime(0, rand(3, 8) * 15));
+    $rec["time"] = rand(3, 8) * 15;
     $rec["description"] = "Fritext ";
     $date = $date->sub(new DateInterval("P{$i}D"));
     $stmt->execute($rec);

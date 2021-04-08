@@ -22,17 +22,16 @@ if ($id < 1) {
     $out->error = ["Felaktig indata", "Ogiltigt id"];
     skickaJSON($out, 400);
 }
-
-$db = kopplaTestDB();
-$sql = "SELECT * from activities where id=:id";
-$stmt = $db->prepare($sql);
-if (!$stmt->execute(['id' => $id])) {
+$db= kopplaTestDB();
+$sql="SELECT t.*, a.activity from tasks t inner join activities a ON a.id=t.activityid where t.id=:id";
+$stmt=$db->prepare($sql);
+if(!$stmt->execute(['id'=>$id])) {
     $out = new stdClass();
-    $out->error = array_merge("Felaktigt databasanrop", $db->errorInfo());
-    skickaJSON($out, 400);
+    $out->error= array_merge("Felaktigt databasanrop", $db->errorInfo());
+    skickaJSON($out, 400);    
 }
 
-if ($rec = $stmt->fetchObject()) {
+if ($rec=$stmt->fetchObject()) {
     skickaJSON($rec);
 } else {
     $out = new stdClass();

@@ -1,3 +1,7 @@
+let today=new Date();
+let tomorrow=new  Date(today.getFullYear(),today.getMonth(), today.getDate()+1).toLocaleDateString()
+let lastYear=new Date(today.getFullYear()-1,today.getMonth(), today.getDate()).toLocaleDateString()
+today=today.toLocaleDateString();
 testCases = [
     // Hämta aktivitet OK!
     {name: 'Hämta enskild aktivitet ok',
@@ -232,13 +236,13 @@ testCases = [
         result: {pages: '?', message: '?'}
     },
     {name: 'Hämta uppgiftslista ok',
-        url: 'getTaskList.php?from=2020-02-02&to=2020-03-03',
+        url: 'getTaskList.php?from=' + lastYear + '&to=' + today,
         method: 'GET',
         status: 200,
         result: {tasks: [{id: '?', activity: '?', date: '?', time: '?', activityId: '?', description: '?'}]}
     },
     {name: 'Hämta uppgiftslista (inga poster)',
-        url: 'getTaskList.php?from=2020-02-02&to=2020-02-02',
+        url: 'getTaskList.php?from=' + tomorrow + '&to=' + tomorrow,
         method: 'GET',
         status: 200,
         result: {message: '?'}
@@ -270,43 +274,43 @@ testCases = [
         result: {error: '?'}
     },
     {name: 'Hämta uppgiftslista (to saknas)',
-        url: 'getTaskList.php?from=2020-02-02',
+        url: 'getTaskList.php?from=' + lastYear,
         method: 'GET',
         status: 400,
         result: {error: '?'}
     },
     {name: 'Hämta uppgiftslista (to ogiltigt datum)',
-        url: 'getTaskList.php?from=2020-02-02&to=2020-02-31',
+        url: 'getTaskList.php?from=2020-02-02&to=2020-02-31' ,
         method: 'GET',
         status: 400,
         result: {error: '?'}
     },
     {name: 'Hämta uppgiftslista (to ogiltigt datum)',
-        url: 'getTaskList.php?from=2020-02-02&to=idag',
+        url: 'getTaskList.php?from=' + lastYear + '&to=idag',
         method: 'GET',
         status: 400,
         result: {error: '?'}
     },
     {name: 'Hämta uppgiftslista (from saknas)',
-        url: 'getTaskList.php?to=2020-02-02',
+        url: 'getTaskList.php?to=' + today,
         method: 'GET',
         status: 400,
         result: {error: '?'}
     },
     {name: 'Hämta uppgiftslista (from ogiltigt datum)',
-        url: 'getTaskList.php?to=2020-02-02&from=2020-02-31',
+        url: 'getTaskList.php?to=' + today + '&from=2020-02-31',
         method: 'GET',
         status: 400,
         result: {error: '?'}
     },
     {name: 'Hämta uppgiftslista (from ogiltigt datum)',
-        url: 'getTaskList.php?to=2020-02-02&from=idag',
+        url: 'getTaskList.php?to=' + today + '&from=idag',
         method: 'GET',
         status: 400,
         result: {error: '?'}
     },
     {name: 'Hämta uppgiftslista (to efter from)',
-        url: 'getTaskList.php?from=2020-04-02&to=2020-03-03',
+        url: 'getTaskList.php?from=' + today + '&to=' + lastYear,
         method: 'GET',
         status: 400,
         result: {error: '?'}
@@ -467,19 +471,19 @@ testCases = [
 
     // Hämta sammanställning
     {name: 'Hämta uppgiftslista ok',
-        url: 'getCompilation.php?from=2020-02-02&to=2020-03-03',
+        url: 'getCompilation.php?from=' + lastYear + '&to=' + today,
         method: 'GET',
         status: 200,
         result: {tasks: [{activity: '?', time: '?', activityId: '?'}]}
     },
     {name: 'Hämta uppgiftslista (inga poster)',
-        url: 'getCompilation.php?from=2020-02-02&to=2020-02-02',
+        url: 'getCompilation.php?from=' + tomorrow + '&to=' + tomorrow,
         method: 'GET',
         status: 200,
         result: {message: '?'}
     },
     {name: 'Hämta uppgiftslista (to saknas)',
-        url: 'getCompilation.php?from=2020-02-02',
+        url: 'getCompilation.php?from=' + lastYear,
         method: 'GET',
         status: 400,
         result: {error: '?'}
@@ -491,31 +495,31 @@ testCases = [
         result: {error: '?'}
     },
     {name: 'Hämta uppgiftslista (to ogiltigt datum)',
-        url: 'getCompilation.php?from=2020-02-02&to=idag',
+        url: 'getCompilation.php?from=' + lastYear + '&to=idag',
         method: 'GET',
         status: 400,
         result: {error: '?'}
     },
     {name: 'Hämta uppgiftslista (from saknas)',
-        url: 'getCompilation.php?to=2020-02-02',
+        url: 'getCompilation.php?to=' + today,
         method: 'GET',
         status: 400,
         result: {error: '?'}
     },
     {name: 'Hämta uppgiftslista (from ogiltigt datum)',
-        url: 'getCompilation.php?to=2020-04-02&from=2020-02-31',
+        url: 'getCompilation.php?to=' + today + '&from=2020-02-31',
         method: 'GET',
         status: 400,
         result: {error: '?'}
     },
     {name: 'Hämta uppgiftslista (from ogiltigt datum)',
-        url: 'getCompilation.php?to=2020-02-02&from=idag',
+        url: 'getCompilation.php?to=' + today + '&from=idag',
         method: 'GET',
         status: 400,
         result: {error: '?'}
     },
     {name: 'Hämta uppgiftslista (to efter from)',
-        url: 'getCompilation.php?from=2020-04-02&to=2020-03-03',
+        url: 'getCompilation.php?from=' + today + '&to=' + lastYear,
         method: 'GET',
         status: 400,
         result: {error: '?'}

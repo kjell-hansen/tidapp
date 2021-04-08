@@ -87,8 +87,8 @@ if (isset($page)) {
         $out->pages = $antalSidor;
         $out->tasks = [];
         while ($rec = $stmt->fetchObject()) {
-            $rec->date = date("Y-m-d", strtotime($rec->date));
-            $rec->time = minuterTillTid((int)$rec->time);
+            $rec->time = date("Y-m-d", strtotime($rec->date));
+            $rec->time = date("G:i", strtotime($rec->time));
             $out->tasks[] = $rec;
         }
     }
@@ -99,8 +99,8 @@ if (isset($page)) {
 
     $out->tasks = [];
     while ($rec = $stmt->fetchObject()) {
-        $rec->date = date("Y-m-d", strtotime($rec->date));
-        $rec->time = minuterTillTid((int)$rec->time);
+        $rec->time = date("Y-m-d", strtotime($rec->date));
+        $rec->time = date("G:i", strtotime($rec->time));
         $out->tasks[] = $rec;
     }
 

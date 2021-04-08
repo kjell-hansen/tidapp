@@ -17,22 +17,16 @@ function kopplaDB() {
         $error = new stdClass();
         $error->error[] = "Något gick fel vid databaskoppling";
         $error->error[] = $fel;
-        echo skickaJSON($error, 500);
-        exit();
+        skickaJSON($error, 500);
     }
 }
 
-function skickaJSON(stdClass $obj, int $status = 200): string {
-    try {
-        $statusText = getStatusMeddelande($status);
-        header("$statusText;Content-type:application/json;charset=utf-8");
-        $json = json_encode($obj, JSON_PRETTY_PRINT + JSON_UNESCAPED_UNICODE);
-        return $json;
-    } catch (Exception $e) {
-        $statusText = getStatusMeddelande(500);
-        header("$statusText;Content-type:application/json;charset=utf-8");
-        return json_encode($e->getMessage());
-    }
+function skickaJSON(stdClass $obj, int $status = 200): void {
+    $statusText = getStatusMeddelande($status);
+    header("$statusText;Content-type:application/json;charset=utf-8");
+    $json = json_encode($obj, JSON_PRETTY_PRINT + JSON_UNESCAPED_UNICODE);
+    echo $json;
+    exit;
 }
 
 function getStatusMeddelande(int $status): string {
@@ -52,4 +46,11 @@ function getStatusMeddelande(int $status): string {
         default:
             throw new Exception("Okänt felnummer ($status)");
     }
+}
+
+function kopplaTestDB() {
+    $db= new PDO('sqlite:../databas/test.db');
+    $db->query('PRAGMA foreign_keys = ON;');
+
+    return $db;
 }

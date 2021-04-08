@@ -53,7 +53,6 @@ $stmt->execute(['from' => $from->format('Y-m-d'), 'to' => $to->format('Y-m-d')])
 $out = new stdClass();
 $out->tasks = [];
 while ($rec = $stmt->fetchObject()) {
-    $rec->time= minuterTillTid((int)$rec->time);
     $out->tasks[] = $rec;
 }
 

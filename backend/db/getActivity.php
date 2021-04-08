@@ -33,6 +33,8 @@ if (!$stmt->execute(['id' => $id])) {
 }
 
 if ($rec = $stmt->fetchObject()) {
+    $rec->id = $id;
+    $rec->activity = $activities[$id % count($activities)];
     skickaJSON($rec);
 } else {
     $out = new stdClass();
