@@ -63,7 +63,7 @@ function kopplaTestDB() {
  */
 function tidStrangTillMinuter(string $tid):int {
     $aTid= explode(":",$tid);
-    if (count($aTid!=2 || filter_var($aTid, FILTER_VALIDATE_INT))) {
+    if (count($aTid)!=2 || filter_var($aTid, FILTER_VALIDATE_INT)) {
         throw new InvalidArgumentException('Tid ska anges på formen [h]h:mm');
     }
     

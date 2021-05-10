@@ -2,7 +2,6 @@
 
 declare (strict_types=1);
 require_once 'funktioner.php';
-$posterPerSida = 15;
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
     $error = new stdClass();
@@ -18,11 +17,23 @@ if (isset($_GET['page'])) {
         $error[] = "Felaktigt sidnummer ('page')";
     }
 }
+$posterPerSida = 15;
+if (isset($_GET['records']) && filter_input(INPUT_GET, 'records', FILTER_VALIDATE_INT)) {
+    $posterPerSida = $_GET['records'];
+}
 
 if (!isset($_GET['page']) && !isset($_GET['to']) && !isset($_GET['from'])) {
     $error = new stdClass();
     $error->error = ["Felaktigt anrop", "'page' ELLER 'to' och 'from' ska anges vid anrop"];
     skickaJSON($error, 400);
+}
+
+if (isset($_GET['activity']) && filter_input(INPUT_GET, 'activity', FILTER_VALIDATE_INT) === false) {
+    $error = new stdClass();
+    $error->error = ["Felaktigt anrop", "'activity' ska vara ett heltal"];
+    skickaJSON($error, 400);
+} else {
+    $activityId = filter_input(INPUT_GET, 'activity', FILTER_VALIDATE_INT);
 }
 
 if (!isset($page)) {
@@ -77,7 +88,7 @@ if (isset($page)) {
         skickaJSON($out);
     } else {
 
-        $sql = "SELECT t.*, a.activity FROM tasks t INNER JOIN activities a ON a.id=t.activityid LIMIT " . $posterPerSida * ($page - 1) . ",$posterPerSida";
+        $sql = "SELECT t.*, a.activity FROM tasks t INNER JOIN activities a ON a.id=t.activityid order by date DESC LIMIT " . $posterPerSida * ($page - 1) . ",$posterPerSida";
         $stmt = $db->prepare($sql);
         if (!$stmt->execute()) {
             $out->error = array_merge("Felaktigt databasanrop", $db->errorInfo());
@@ -88,24 +99,29 @@ if (isset($page)) {
         $out->tasks = [];
         while ($rec = $stmt->fetchObject()) {
             $rec->date = date("Y-m-d", strtotime($rec->date));
-            $rec->time = minuterTillTid((int)$rec->time);
+            $rec->time = minuterTillTid((int) $rec->time);
             $out->tasks[] = $rec;
         }
     }
 } else {
-    $sql = "SELECT t.*, a.activity FROM tasks t INNER JOIN activities a ON a.id=t.activityid where t.date BETWEEN :from AND :to";
+    $params = ['from' => $from->format('Y-m-d'), 'to' => $to->format('Y-m-d')];
+    $sql = "SELECT t.*, a.activity FROM tasks t INNER JOIN activities a ON a.id=t.activityid where (t.date BETWEEN :from AND :to)";
+    if (isset($activityId)) {
+        $sql .= " AND a.id=:id";
+        $params['id'] = $activityId;
+    }
     $stmt = $db->prepare($sql);
-    $stmt->execute(['from' => $from->format('Y-m-d'), 'to' => $to->format('Y-m-d')]);
-
+    $stmt->execute($params);
+    $out->result = false;
     $out->tasks = [];
     while ($rec = $stmt->fetchObject()) {
         $rec->date = date("Y-m-d", strtotime($rec->date));
-        $rec->time = minuterTillTid((int)$rec->time);
+        $rec->time = minuterTillTid((int) $rec->time);
         $out->tasks[] = $rec;
     }
 
     if (count($out->tasks) === 0) {
-        $out = new stdClass();
+        $out->result = false;
         $out->message = ["Inga rader matchar angivet datumintervall"];
         skickaJSON($out);
     }

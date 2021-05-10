@@ -51,6 +51,7 @@ $stmt = $db->prepare($sql);
 $stmt->execute(['from' => $from->format('Y-m-d'), 'to' => $to->format('Y-m-d')]);
 
 $out = new stdClass();
+    $out->result=true;
 $out->tasks = [];
 while ($rec = $stmt->fetchObject()) {
     $rec->time= minuterTillTid((int)$rec->time);
@@ -59,6 +60,7 @@ while ($rec = $stmt->fetchObject()) {
 
 if (count($out->tasks) === 0) {
     $out = new stdClass();
+    $out->result=false;
     $out->message = ["Inga rader matchar angivet datumintervall"];
     skickaJSON($out);
 }

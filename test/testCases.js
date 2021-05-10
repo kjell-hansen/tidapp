@@ -474,13 +474,13 @@ testCases = [
         url: 'getCompilation.php?from=' + lastYear + '&to=' + today,
         method: 'GET',
         status: 200,
-        result: {tasks: [{activity: '?', time: '?', activityId: '?'}]}
+        result: {result: true, tasks: [{activity: '?', time: '?', activityId: '?'}]}
     },
     {name: 'Hämta uppgiftslista (inga poster)',
         url: 'getCompilation.php?from=' + tomorrow + '&to=' + tomorrow,
         method: 'GET',
         status: 200,
-        result: {message: '?'}
+        result: {result: false, message: '?'}
     },
     {name: 'Hämta uppgiftslista (to saknas)',
         url: 'getCompilation.php?from=' + lastYear,

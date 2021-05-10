@@ -85,7 +85,7 @@ if (isset($id)) {
     $out = new stdClass();
     $sql = "UPDATE tasks SET activityid=:activityid, time=:time, date=:date, description=:description where id=:id";
     $stmt = $db->prepare($sql);
-    $stmt->execute(['id' => $id, 'activityid' => $activityId, 'time' => tidStrangTillMinuter($tid), 'date' => $datum->format('Y-m-d'), 'description' => $description]);
+    $stmt->execute(['id' => $id, 'activityid' => $activityId, 'time' => tidStrangTillMinuter($tid->format('G:i')), 'date' => $datum->format('Y-m-d'), 'description' => $description]);
     $antalPoster = $stmt->rowCount();
     if ($antalPoster === 0) {
         $out->result = false;
@@ -97,7 +97,7 @@ if (isset($id)) {
 } else {
     $sql = "INSERT INTO tasks (activityid, time, date, description) VALUES (:activityid, :time, :date, :description)";
     $stmt = $db->prepare($sql);
-    $stmt->execute(['activityid' => $activityId, 'time' =>  tidStrangTillMinuter($tid), 'date' => $datum->format('Y-m-d'), 'description' => $description]);
+    $stmt->execute(['activityid' => $activityId, 'time' =>  tidStrangTillMinuter($tid->format('G:i')), 'date' => $datum->format('Y-m-d'), 'description' => $description]);
     $antalPoster = $stmt->rowCount();
     if ($antalPoster === 1) {
         $out = new stdClass();

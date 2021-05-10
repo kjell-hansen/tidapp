@@ -42,7 +42,7 @@ if ($antal === 0) {
     $svar->result = false;
 } else {
     $svar->result = true;
-    $svar->message = ["1 post(er) raderades"];
+    $svar->message = ["$antal post(er) raderades"];
 }
 skickaJSON($svar);
 

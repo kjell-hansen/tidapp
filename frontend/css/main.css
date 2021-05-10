@@ -1,0 +1,307 @@
+:root {
+    --bakgrund_farg: lightskyblue;
+    --tabb_bakgrundsfarg: lightcyan;
+    --tabb_textfarg: grey;
+    --tabb_skuggaFarg:  grey;
+    --aktivTabb_bakgrundsfarg: #6fa9fb;
+    --aktivTabb_textfarg: black;
+    --tabb_ram: 1px solid blue;
+    --tabell_huvudbakgrundsfarg: lightskyblue;
+    --tabell_pyjamasUddaRad_bakgrundsfarg: lightyellow;
+    --tabell_pyjamasJamnRad_bakgrundsfarg: lightcyan;
+    --toast_error_background: pink;
+    --toast_error_color: darkred;
+    --toast_ok_background: lightgreen;
+    --toast_ok_color: darkgreen;
+    --toast_info_background: lightblue;
+    --toast_info_color: navy;
+    --form_background: lightgreen;
+    --form_border: 1px solid navy;
+    --nyTask_Border: 1px solid blue;
+    --nyTask_BackgroundTo: forestgreen;
+    --nyTask_BackgroundFrom: lightgreen;
+    --button_BackgroundFrom:lightskyblue;
+    --button_BackgroundTo:navy;
+}
+* {
+    box-sizing: border-box;
+}
+html {
+    margin: 0;
+}
+body {
+    margin: 0;
+    padding: 5px;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows:auto 1fr 50px;
+    background-color: var(--bakgrund_farg);
+
+}
+header {
+    display: flex;
+}
+header span {
+    position: relative;
+    left: 1em;
+    top: 1px;
+    border: var(--tabb_ram);
+    border-top-right-radius: 2em;
+    background-color: var(--tabb_bakgrundsfarg);
+    padding: .5em;
+    margin-left: -1em;
+    color: var(--tabb_textfarg);
+}
+header span.active {
+    z-index: 1;
+    border-bottom: none;
+    background-color: var(--aktivTabb_bakgrundsfarg);
+    color: var(--aktivTabb_textfarg);
+    box-shadow: 7px -1px 5px  var(--tabb_skuggaFarg);
+}
+main {
+    overflow-y: auto; 
+}
+footer {
+    border: var(--tabb_ram);
+    border-top: none;
+}
+footer p{
+    position: absolute;
+    bottom: 0;
+    left:0;
+    right:0;
+    font-size: small;
+    text-align: center;
+}
+
+section {
+    border: var(--tabb_ram);
+    border-bottom: none;
+    padding: .7em;
+    display: block;
+    height: 100%;
+    overflow: auto;
+    outline: 1px solid aliceblue;
+    outline-offset: -2px;
+}
+h1 {
+    margin: 0;
+    padding: 0;
+}
+p {
+    margin: 0;
+    padding-bottom: 10px;
+}
+.visible {
+    visibility: visible;
+}
+.hidden {
+    visibility: hidden;
+    display: none;
+}
+.scroll {
+    overflow: auto;
+}
+table.pyjamas {
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+table.pyjamas td {
+    padding-left: 5px;
+    padding-right: 5px;
+    vertical-align: top;
+}
+td.right {
+    text-align: right;
+}
+table.pyjamas thead tr {
+    background-color: var(--tabell_huvudbakgrundsfarg);
+}
+table.pyjamas tbody tr:nth-child(2n) {
+    background-color: var(--tabell_pyjamasJamnRad_bakgrundsfarg);
+}
+table.pyjamas tbody tr:nth-child(2n+1) {
+    background-color: var(--tabell_pyjamasUddaRad_bakgrundsfarg);
+}
+td input {
+    width: 100%;
+}
+
+legend {
+    font-size: large;
+    font-style: italic;
+}
+input[type=button] {
+    margin-top: 10px;
+    background-image: linear-gradient(to bottom right, var(--button_BackgroundFrom), var(--button_BackgroundTo));
+    color: wheat;
+    padding: 5px;
+    border-radius: 20%;
+    border: none;
+}
+
+textarea {
+    width: 100%;
+}
+.pagination {
+    cursor: pointer;
+    text-decoration: underline;
+    padding: .25em;
+}
+
+.lastPage {
+    cursor: default;
+    text-decoration: none;
+    padding: .25em;
+}
+#table_compilation, #table_activities {
+    min-width: 90%;
+}
+
+#ny_task {
+    display: inline-block;
+    padding: 5px;
+    margin-top: 5px;
+    border-radius: 20%;
+    color: white;
+    background-image: linear-gradient(to bottom right, var(--nyTask_BackgroundFrom), var(--nyTask_BackgroundTo));
+}
+
+/* Beräknade värden för scroll-divvarna */
+#compilation .scroll {
+    max-height: calc(100% - 125px);
+}
+#tasklist .scroll {
+    max-height: calc(100% - 180px);
+}
+#activities .scroll {
+    max-height: calc(100% - 30px);
+}
+
+#toast {
+    position: fixed;
+    top: 30px;
+    left: 10px;
+    right: 10px;
+    background-color: red;
+    border: 1px solid black;
+    padding: .7em;
+    visibility: hidden;
+    z-index: 2;
+}
+#toast.ok {
+    visibility: visible;
+    background-color: var(--toast_ok_background);
+    color: var(--toast_ok_color);
+}
+#toast.error {
+    visibility: visible;
+    background-color: var(--toast_error_background);
+    color: var(--toast_error_color);
+}
+#toast.info {
+    visibility: visible;
+    background-color: var(--toast_info_background);
+    color: var(--toast_info_color);
+}
+#modal_form {
+    display: none; /* Hidden by default */
+    position: absolute; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    right: 0; /* Full width */
+    bottom: 0; /* Full height */
+    background-color: rgb(255,255,255); /* Fallback color */
+    background-color: rgba(127,127,127,0.7); /* Black w/ opacity */
+}
+
+#modal_form  form {
+    background-color: var(--form_background);
+    margin: 15% auto auto auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: var(--form_border);
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+#modal_form  label {
+    display: inline-block;
+    width: 4em;
+    padding:5px;
+}
+/* The Close Button */
+#modal_form  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+#modal_form  .close:hover, #modal_form  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 500px) {
+    html {
+        overflow: hidden;
+        font-size: 5vw;
+    }
+
+    header span {
+        position: relative;
+        left: 1em;
+        top: 1px;
+        border: var(--tabb_ram);
+        border-top-right-radius: 0;
+        background-color: var(--tabb_bakgrundsfarg);
+        padding: .5em;
+        margin: initial;
+        color: var(--tabb_textfarg);
+        width: 60px;
+        height: 60px;
+    }
+    header span.active {
+        z-index: 1;
+        border-bottom: none;
+        background-color: var(--aktivTabb_bakgrundsfarg);
+        color: var(--aktivTabb_textfarg);
+        box-shadow: none;
+    }
+    header span:nth-child(1){
+        content: url('../images/list.png');        
+    }
+    header span:nth-child(2){
+        content: url('../images/redigera.png');        
+    }
+    header span:nth-child(3){
+        content: url('../images/puzzle.png');        
+    }
+    header span:nth-child(4){
+        content: url('../images/settings.png');        
+    }
+    section h1 {
+        display: none
+    }
+
+    input, select, input[type=checkbox],input[type=radio]  {
+        font-size: 4.5vw;
+    }
+
+    #tasklist_sidor {
+        font-size: 5vw;
+    }
+
+    #table_tasklist td:nth-child(5),  
+    #table_tasklist th:nth-child(4)  {
+        display: none;
+    }
+
+    table img {
+        width: 24px;
+        height  : 24px;
+    }
+}
