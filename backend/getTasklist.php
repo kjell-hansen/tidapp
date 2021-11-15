@@ -72,7 +72,7 @@ if (count($error) > 0) {
     skickaJSON($fel, 400);
 }
 
-$db = kopplaTestDB();
+$db = kopplaDB();
 $out = new stdClass();
 
 if (isset($page)) {
@@ -91,7 +91,9 @@ if (isset($page)) {
         $sql = "SELECT t.*, a.activity FROM tasks t INNER JOIN activities a ON a.id=t.activityid order by date DESC LIMIT " . $posterPerSida * ($page - 1) . ",$posterPerSida";
         $stmt = $db->prepare($sql);
         if (!$stmt->execute()) {
-            $out->error = array_merge("Felaktigt databasanrop", $db->errorInfo());
+            var_dump($stmt->execute());
+            echo "95";
+            $out->error = array_merge(["Felaktigt databasanrop"], $db->errorInfo());
             skickaJSON($out, 400);
         }
 

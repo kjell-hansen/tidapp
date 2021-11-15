@@ -42,7 +42,7 @@ if (isset($_POST['time']) && $_POST['time'] !== "") {
     $error[] = "'time' saknas";
 }
 
-$db = kopplaTestDB();
+$db = kopplaDB();
 
 $activityId = filter_input(INPUT_POST, "activityId", FILTER_VALIDATE_INT);
 if (!$activityId || $activityId < 0) {

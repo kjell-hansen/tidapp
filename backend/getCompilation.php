@@ -44,7 +44,7 @@ if (count($error) > 0) {
     $fel->error = $error;
     skickaJSON($fel, 400);
 }
-$db = kopplaTestDB();
+$db = kopplaDB();
 
 $sql = "SELECT activityId, a.activity, sum(time) as time FROM tasks t INNER JOIN activities a ON a.id=t.activityid WHERE t.date BETWEEN :from AND :to  GROUP BY activityId ";
 $stmt = $db->prepare($sql);

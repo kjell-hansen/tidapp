@@ -1,4 +1,4 @@
-var serverPath = 'http://localhost/tidapp/dummy/';
+var serverPath = 'http://localhost/tidapp/backend/';
 var lastPage = 1;
 window.onload = function () {
 
@@ -23,7 +23,10 @@ window.onload = function () {
         modal.style.display = "none";
     });
 
-
+    let idag=new Date();
+    if(idag.getFullYear()>2021) {
+        document.getElementById('crYear').innerHTML="2021-" + idag.getFullYear()
+    }
 
     let flik = getCookie('startFlik', 'compilation');
     for (let t of tabs) {

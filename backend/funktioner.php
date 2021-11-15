@@ -9,8 +9,7 @@ function kopplaDB() {
         $dbHost = 'localhost';
         $dbUser = 'root';
         $dbPassword = '';
-        $db = mysqli_connect($dbHost, $dbUser, $dbPassword, "tidsredovisning");
-        $db->set_charset("utf8");
+        $db= new PDO("mysql:host=$dbHost;dbname=tidapp;charset=UTF8", $dbUser, $dbPassword);
         return $db;
     } catch (Exception $e) {
         $fel = $e->getMessage();
@@ -53,4 +52,35 @@ function kopplaTestDB() {
     $db->query('PRAGMA foreign_keys = ON;');
 
     return $db;
+}
+
+/**
+ * Funktion för att konvertera en tidssträng (i formatet [h]h:mm) till ett heltal som anger antalet minuter
+ * @param string $tid (format [h]h:mm, t.ex. 1:10)
+ * @return int antal minuter t.ex. 1:10 -> 70
+ */
+function tidStrangTillMinuter(string $tid):int {
+    $aTid= explode(":",$tid);
+    if (count($aTid)!=2 || filter_var($aTid, FILTER_VALIDATE_INT)) {
+        throw new InvalidArgumentException('Tid ska anges på formen [h]h:mm');
+    }
+    
+    $timmar=(int) $aTid[0];
+    $minuter=(int) $aTid[1];
+    
+    return (60*$timmar+$minuter);
+        
+}
+
+/**
+ * Funktion för att konvertera ett antal minuter till en tidssträng med formatet [h]h:mm
+ * @param int $minuter antal minuter att konvertera
+ * @return string tidssträng i formatet [h]h:mm
+ */
+function minuterTillTid(int $minuter):string {
+    $timmar=intdiv($minuter , 60);
+    $rest=$minuter % 60;
+    
+    $tid= sprintf('%d:%02d', $timmar, $rest);
+    return $tid;
 }

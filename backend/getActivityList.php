@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
 }
 $out = new stdClass();
 
-$db = kopplaTestDB();
+$db = kopplaDB();
 $sql = "SELECT * from activities";
 $stmt = $db->prepare($sql);
 if (!$stmt->execute()) {
