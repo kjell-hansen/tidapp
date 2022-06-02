@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] !== "POST") {
     $error->error = ["Saknar postdata", "Metoden POST ska användas vid anrop till sidan"];
     skickaJSON($error, 405);
 }
-$db = kopplaDB();
+$db = kopplaTestDB();
 
 if (isset($_POST['id'])) {
     $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);

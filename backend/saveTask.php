@@ -31,7 +31,7 @@ if (isset($_POST['time']) && $_POST['time'] !== "") {
     } else {
         if (($tid = date_create_from_format('H:i', $in)) === false) {
             $error[] = "Felaktig 'time'";
-        } elseif ($tid->format('G:i') != $in) {
+        } elseif ($tid->format('H:i') != $in) {
             $error[] = "Felaktigt angiven 'time'";
         }
         if ($tid && $tid->format("H:i") > "08:00") {

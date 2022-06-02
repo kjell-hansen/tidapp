@@ -1,4 +1,4 @@
-var serverPath = 'http://localhost/tidapp/backend/';
+var serverPath = 'http://localhost/Ovningar/tidsapp/';
 var lastPage = 1;
 window.onload = function () {
 
@@ -23,9 +23,9 @@ window.onload = function () {
         modal.style.display = "none";
     });
 
-    let idag=new Date();
-    if(idag.getFullYear()>2021) {
-        document.getElementById('crYear').innerHTML="2021-" + idag.getFullYear()
+    let idag = new Date();
+    if (idag.getFullYear() > 2021) {
+        document.getElementById('crYear').innerHTML = "2021-" + idag.getFullYear()
     }
 
     let flik = getCookie('startFlik', 'compilation');
@@ -199,21 +199,21 @@ function fetchCompilation() {
                     return;
                 }
                 clearTableBody('table_compilation');
-                if (data.result) {
-                    let table = document.getElementById('table_compilation');
-                    for (let task of data.tasks) {
-                        let row = document.createElement('tr');
-                        let c = row.insertCell()
-                        c.innerHTML = task.activity;
-                        c = row.insertCell();
-                        c.innerHTML = task.time;
-                        c.className = 'right';
-                        table.tBodies[0].appendChild(row);
-                    }
-                } else {
-                    showToast('info', data.message);
+//                if (data.result) {
+                let table = document.getElementById('table_compilation');
+                for (let task of data.tasks) {
+                    let row = document.createElement('tr');
+                    let c = row.insertCell()
+                    c.innerHTML = task.activity;
+                    c = row.insertCell();
+                    c.innerHTML = task.time;
+                    c.className = 'right';
+                    table.tBodies[0].appendChild(row);
                 }
-            });
+                /*                } else {
+                 showToast('info', data.message);
+                 }
+                 */            });
 }
 
 function selectRadioDate() {
@@ -303,7 +303,7 @@ function fetchTasklistPage(ev) {
     }
     let frm = document.forms['tasklist'];
     frm.taskList_listTyp.value = 'sida';
-    let page=lastPage;
+    let page = lastPage;
     let url = serverPath + 'getTasklist.php?page=' + page + '&records=' + getCookie('tasklistStorlek', 20);
     fetch(url)
             .then(response => {
@@ -313,8 +313,8 @@ function fetchTasklistPage(ev) {
             showToast('error', data.error);
             return;
         }
-        if(data.pages<page){
-            lastPage=data.pages;
+        if (data.pages < page) {
+            lastPage = data.pages;
             fetchTasklistPage();
             return;
         }
@@ -365,11 +365,13 @@ function fillTasklist(tasks) {
         c.innerHTML = task.time;
         c.className = 'right';
         c = row.insertCell();
-        if (task.description.replace('/r/n', '').length > getCookie('settings_maxlength', 70)) {
-            c.innerHTML = chopText(task.description.replace('\r\n', '<br>'), getCookie('settings_maxlength', 70));
-            c.setAttribute('title', task.description);
-        } else {
-            c.innerHTML = task.description.replace('\r\n', '<br>');
+        if (task.description !== null) {
+            if (task.description.replace('/r/n', '').length > getCookie('settings_maxlength', 70)) {
+                c.innerHTML = chopText(task.description.replace('\r\n', '<br>'), getCookie('settings_maxlength', 70));
+                c.setAttribute('title', task.description);
+            } else {
+                c.innerHTML = task.description.replace('\r\n', '<br>');
+            }
         }
         c = row.insertCell();
         img = document.createElement('img');

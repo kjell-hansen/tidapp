@@ -18,7 +18,7 @@ if (isset($_GET['id'])) {
     }
 }
 
-$db = kopplaTestDB();
+$db = kopplaDB();
 if (!isset($_POST['activity'])) {
     $error[] = "'activity' saknas";
 } else {
@@ -78,7 +78,7 @@ if (isset($id)) {
     $stmt = $db->prepare($sql);
     $stmt->execute(['activity' => $uppgift]);
     $antal = $stmt->rowCount();
-    if (in_array($uppgift, $activities)) {
+    if ($antal===0) {
         $error = new stdClass();
         $error->error = array_merge(["Fel vid spara"], $stmt->errorInfo());
         skickaJSON($error, 400);
