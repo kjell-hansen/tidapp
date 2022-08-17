@@ -1,0 +1,34 @@
+[
+    {
+        "id": 1,
+        "activity": "Slappat"
+    },
+    {
+        "id": 2,
+        "activity": "Kodat frontend"
+    },
+    {
+        "id": 3,
+        "activity": "Slötittat på YouTube"
+    },
+    {
+        "id": 4,
+        "activity": "Kodat backend"
+    },
+    {
+        "id": 5,
+        "activity": "Felsökt frontend"
+    },
+    {
+        "id": 6,
+        "activity": "Felsökt backend"
+    },
+    {
+        "id": 7,
+        "activity": "Kaffepaus"
+    },
+    {
+        "id": 8,
+        "activity": "Sökt information på nätet"
+    }
+]

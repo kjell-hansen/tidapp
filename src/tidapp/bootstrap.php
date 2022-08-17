@@ -7,7 +7,7 @@ define('ROOT_DIR', __DIR__ . "/");
   define('SERVER_PATH', substr($serverPath,0,-1));
 
  */
-require_once 'routing/routing.php';
+require_once ROOT_DIR . 'routing/routing.php';
 
 $querystring = filter_var($_SERVER['REQUEST_URI'], FILTER_UNSAFE_RAW);
 $route = getRoute($querystring);
@@ -42,15 +42,15 @@ switch ($route->route) {
         break;
     case "/task/":
         switch ($route->method) {
-            case RequestMethod::GET:
+            case REQUEST_GET:
                 echo "Hämta uppgiftnr:" . $route->params[0];
-            case RequestMethod::POST:
+            case REQUEST_POST:
                 echo "Spara NY aktivitet";
                 break;
-            case RequestMethod::PUT:
+            case REQUEST_PUT:
                 echo "Uppdatera aktivitetnr:" . $route->params[0];
                 break;
-            case RequestMethod::DELETE:
+            case REQUEST_DELETE:
                 echo "Radera aktivitetnr:" . $route->params[0];
                 break;
         }

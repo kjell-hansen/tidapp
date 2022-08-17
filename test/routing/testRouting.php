@@ -1,7 +1,7 @@
 <?php
 
 declare (strict_types=1);
-require_once '../../src/tidapp/routing/routing.php';
+require_once __DIR__ . '/../../src/tidapp/routing/routing.php';
 
 testRequestMethods();
 testGetRoute();
