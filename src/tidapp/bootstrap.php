@@ -8,18 +8,22 @@ define('ROOT_DIR', __DIR__ . "/");
 
  */
 require_once ROOT_DIR . 'routing/routing.php';
+require_once ROOT_DIR . 'activity/activities.php';
+require_once ROOT_DIR . '/functions/functions.php';
 
 $querystring = filter_var($_SERVER['REQUEST_URI'], FILTER_UNSAFE_RAW);
 $route = getRoute($querystring);
 
+header("$statusText;Content-type:application/json;charset=utf-8");
 switch ($route->route) {
     case '/activity/':
         switch ($route->method) {
             case REQUEST_GET:
+                $db = getDatabase();
                 if (count($route->params) === 1) {
-                    echo "Hämta aktivitetsnr:" . $route->params[0];
+                    echo getActivity($db, (int) $route->params[0]);
                 } else {
-                    echo "Hämta alla aktiviteter";
+                    echo getActivities($db);
                 }
                 break;
             case REQUEST_POST:

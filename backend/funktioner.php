@@ -20,7 +20,7 @@ function kopplaDB() {
     }
 }
 
-function skickaJSON(stdClass $obj, int $status = 200): void {
+function skickaJSON(stdClass $obj, int $status = 200): string {
     $statusText = getStatusMeddelande($status);
     header("$statusText;Content-type:application/json;charset=utf-8");
     $json = json_encode($obj, JSON_PRETTY_PRINT + JSON_UNESCAPED_UNICODE);
