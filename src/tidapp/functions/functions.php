@@ -2,7 +2,7 @@
 
 declare (strict_types=1);
 
-function refreshDatabase():stdClass {
+function resetDatabase():stdClass {
     $retur=new stdClass();
     $actData= file_get_contents(__DIR__ . '/../data/activities.json');
     $taskData=file_get_contents  (__DIR__ . '/../data/tasks.json');
@@ -24,14 +24,15 @@ function getDatabase(): stdClass {
     if (isset($_SESSION["db"])) {
         return json_decode($_SESSION["db"]);
     } else {
-        return refreshDatabase();        
+        return resetDatabase();        
     }
 }
 
-function skickaJSON(stdClass $obj, int $status = 200): string {
-    $statusText = getStatusMeddelande($status);
-    $json = json_encode($obj, JSON_PRETTY_PRINT + JSON_UNESCAPED_UNICODE);
-    return $json;
+function createOutput(stdClass $obj, int $status = 200): stdClass {
+    $return=new stdClass();
+    $return->statusText = getStatusMeddelande($status);
+    $return->json = json_encode($obj, JSON_PRETTY_PRINT + JSON_UNESCAPED_UNICODE);
+    return $return;
 }
 
 function getStatusMeddelande(int $status): string {

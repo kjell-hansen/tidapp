@@ -49,7 +49,7 @@ function testRefreshDatabase(): void {
     $db->activities = json_decode($actData);
     setDatabase($db);
     if (json_encode($db) !== json_encode($old)) {
-        refreshDatabase();
+        resetDatabase();
         $new = getDatabase();
         if (json_encode($new) === json_encode($old)) {
             echo "RefreshDatabase OK\n";
