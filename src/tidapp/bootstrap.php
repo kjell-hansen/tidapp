@@ -44,7 +44,7 @@ switch ($route->route) {
         break;
     case "/tasklist/":
         if (count($route->params) === 1) {
-            $out = getTasks($db, (int) $route->params[0]);
+            $out = getTasksByPage($db, (int) $route->params[0]);
             resetDatabase();
             break;
         } else {
