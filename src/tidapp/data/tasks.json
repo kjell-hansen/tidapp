@@ -2,400 +2,400 @@
     {
         "id": 1,
         "activityId": 8,
-        "time": 90,
-        "date": "2021-04-23",
+        "time": "01:30",
+        "date": -7,
         "description": "Fritext "
     },
     {
         "id": 2,
         "activityId": 1,
-        "time": 105,
-        "date": "2021-04-28",
-        "description": "Fritext med många bokstäver\nOch radbrytningar mitt i allt"
+        "time": "01:45",
+        "date": -2,
+        "description": "Fritext med m\u00e5nga bokst\u00e4ver\nOch radbrytningar mitt i allt"
     },
     {
         "id": 3,
         "activityId": 8,
-        "time": 60,
-        "date": "2021-04-12",
+        "time": "01:00",
+        "date": -18,
         "description": "Fritext "
     },
     {
         "id": 4,
         "activityId": 7,
-        "time": 105,
-        "date": "2021-04-05",
+        "time": "01:45",
+        "date": -25,
         "description": "Fritext "
     },
     {
         "id": 5,
         "activityId": 5,
-        "time": 45,
-        "date": "2021-03-22",
+        "time": "00:45",
+        "date": -39,
         "description": "Fritext "
     },
     {
         "id": 6,
         "activityId": 8,
-        "time": 90,
-        "date": "2021-03-18",
+        "time": "01:30",
+        "date": -43,
         "description": "Fritext "
     },
     {
         "id": 7,
         "activityId": 7,
-        "time": 105,
-        "date": "2021-03-03",
+        "time": "01:45",
+        "date": -58,
         "description": "Fritext "
     },
     {
         "id": 8,
         "activityId": 7,
-        "time": 75,
-        "date": "2021-02-17",
+        "time": "01:15",
+        "date": -72,
         "description": "Fritext "
     },
     {
         "id": 9,
         "activityId": 7,
-        "time": 105,
-        "date": "2021-02-11",
+        "time": "01:45",
+        "date": -78,
         "description": "Fritext "
     },
     {
         "id": 10,
         "activityId": 6,
-        "time": 60,
-        "date": "2021-02-05",
+        "time": "01:00",
+        "date": -84,
         "description": "Fritext "
     },
     {
         "id": 11,
         "activityId": 5,
-        "time": 105,
-        "date": "2021-01-23",
+        "time": "01:45",
+        "date": -97,
         "description": "Fritext "
     },
     {
         "id": 12,
         "activityId": 8,
-        "time": 90,
-        "date": "2021-01-19",
+        "time": "01:30",
+        "date": -14,
         "description": "Fritext "
     },
     {
         "id": 13,
         "activityId": 5,
-        "time": 90,
-        "date": "2021-01-12",
+        "time": "01:30",
+        "date": -15,
         "description": "Fritext "
     },
     {
         "id": 14,
         "activityId": 5,
-        "time": 75,
-        "date": "2020-12-31",
+        "time": "01:15",
+        "date": -17,
         "description": "Fritext "
     },
     {
         "id": 15,
         "activityId": 2,
-        "time": 105,
-        "date": "2020-12-19",
+        "time": "01:45",
+        "date": -19,
         "description": "Fritext "
     },
     {
         "id": 16,
         "activityId": 6,
-        "time": 120,
-        "date": "2020-12-18",
+        "time": "02:00",
+        "date": -19,
         "description": "Fritext "
     },
     {
         "id": 17,
         "activityId": 5,
-        "time": 120,
-        "date": "2020-12-13",
+        "time": "02:00",
+        "date": -20,
         "description": "Fritext "
     },
     {
         "id": 18,
         "activityId": 3,
-        "time": 60,
-        "date": "2020-12-09",
+        "time": "01:00",
+        "date": -20,
         "description": "Fritext "
     },
     {
         "id": 19,
         "activityId": 6,
-        "time": 105,
-        "date": "2020-11-29",
+        "time": "01:45",
+        "date": -22,
         "description": "Fritext "
     },
     {
         "id": 20,
         "activityId": 2,
-        "time": 90,
-        "date": "2020-11-16",
+        "time": "01:30",
+        "date": -24,
         "description": "Fritext "
     },
     {
         "id": 21,
         "activityId": 2,
-        "time": 45,
-        "date": "2020-11-07",
+        "time": "00:45",
+        "date": -25,
         "description": "Fritext "
     },
     {
         "id": 22,
         "activityId": 8,
-        "time": 120,
-        "date": "2020-10-29",
+        "time": "02:00",
+        "date": -26,
         "description": "Fritext "
     },
     {
         "id": 23,
         "activityId": 2,
-        "time": 60,
-        "date": "2020-10-14",
+        "time": "01:00",
+        "date": -28,
         "description": "Fritext "
     },
     {
         "id": 24,
         "activityId": 4,
-        "time": 105,
-        "date": "2020-10-13",
+        "time": "01:45",
+        "date": -28,
         "description": "Fritext "
     },
     {
         "id": 25,
         "activityId": 5,
-        "time": 120,
-        "date": "2020-10-02",
+        "time": "02:00",
+        "date": -30,
         "description": "Fritext "
     },
     {
         "id": 26,
         "activityId": 4,
-        "time": 75,
-        "date": "2020-09-28",
+        "time": "01:15",
+        "date": -31,
         "description": "Fritext "
     },
     {
         "id": 27,
         "activityId": 7,
-        "time": 75,
-        "date": "2020-09-25",
+        "time": "01:15",
+        "date": -31,
         "description": "Fritext "
     },
     {
         "id": 28,
         "activityId": 7,
-        "time": 45,
-        "date": "2020-09-11",
+        "time": "00:45",
+        "date": -33,
         "description": "Fritext "
     },
     {
         "id": 29,
         "activityId": 7,
-        "time": 60,
-        "date": "2020-08-28",
+        "time": "01:00",
+        "date": -35,
         "description": "Fritext "
     },
     {
         "id": 30,
         "activityId": 4,
-        "time": 45,
-        "date": "2020-08-14",
+        "time": "00:45",
+        "date": -37,
         "description": "Fritext "
     },
     {
         "id": 31,
         "activityId": 7,
-        "time": 90,
-        "date": "2020-08-11",
+        "time": "01:30",
+        "date": -37,
         "description": "Fritext "
     },
     {
         "id": 32,
         "activityId": 7,
-        "time": 75,
-        "date": "2020-08-05",
+        "time": "01:15",
+        "date": -38,
         "description": "Fritext "
     },
     {
         "id": 33,
         "activityId": 4,
-        "time": 105,
-        "date": "2020-07-30",
+        "time": "01:45",
+        "date": -39,
         "description": "Fritext "
     },
     {
         "id": 34,
         "activityId": 3,
-        "time": 60,
-        "date": "2020-07-27",
+        "time": "01:00",
+        "date": -40,
         "description": "Fritext "
     },
     {
         "id": 35,
         "activityId": 5,
-        "time": 90,
-        "date": "2020-07-25",
+        "time": "01:30",
+        "date": -40,
         "description": "Fritext "
     },
     {
         "id": 36,
         "activityId": 7,
-        "time": 60,
-        "date": "2020-07-21",
+        "time": "01:00",
+        "date": -40,
         "description": "Fritext "
     },
     {
         "id": 37,
         "activityId": 6,
-        "time": 75,
-        "date": "2020-07-15",
+        "time": "01:15",
+        "date": -41,
         "description": "Fritext "
     },
     {
         "id": 38,
         "activityId": 3,
-        "time": 105,
-        "date": "2020-07-02",
+        "time": "01:45",
+        "date": -43,
         "description": "Fritext "
     },
     {
         "id": 39,
         "activityId": 1,
-        "time": 90,
-        "date": "2020-06-22",
+        "time": "01:30",
+        "date": -45,
         "description": "Fritext "
     },
     {
         "id": 40,
         "activityId": 5,
-        "time": 105,
-        "date": "2020-06-14",
+        "time": "01:45",
+        "date": -46,
         "description": "Fritext "
     },
     {
         "id": 41,
         "activityId": 5,
-        "time": 60,
-        "date": "2020-06-10",
+        "time": "01:00",
+        "date": -46,
         "description": "Fritext "
     },
     {
         "id": 42,
         "activityId": 3,
-        "time": 120,
-        "date": "2020-05-29",
+        "time": "02:00",
+        "date": -48,
         "description": "Fritext "
     },
     {
         "id": 43,
         "activityId": 1,
-        "time": 120,
-        "date": "2020-05-19",
+        "time": "02:00",
+        "date": -49,
         "description": "Fritext "
     },
     {
         "id": 44,
         "activityId": 1,
-        "time": 120,
-        "date": "2020-05-11",
+        "time": "02:00",
+        "date": -51,
         "description": "Fritext "
     },
     {
         "id": 45,
         "activityId": 8,
-        "time": 45,
-        "date": "2020-05-03",
+        "time": "00:45",
+        "date": -52,
         "description": "Fritext "
     },
     {
         "id": 46,
         "activityId": 4,
-        "time": 75,
-        "date": "2020-04-18",
+        "time": "01:15",
+        "date": -54,
         "description": "Fritext "
     },
     {
         "id": 47,
         "activityId": 8,
-        "time": 120,
-        "date": "2020-04-07",
+        "time": "02:00",
+        "date": -55,
         "description": "Fritext "
     },
     {
         "id": 48,
         "activityId": 8,
-        "time": 45,
-        "date": "2020-03-31",
+        "time": "00:45",
+        "date": -56,
         "description": "Fritext "
     },
     {
         "id": 49,
         "activityId": 6,
-        "time": 105,
-        "date": "2020-03-24",
+        "time": "01:45",
+        "date": -57,
         "description": "Fritext "
     },
     {
         "id": 50,
         "activityId": 3,
-        "time": 45,
-        "date": "2020-03-19",
+        "time": "00:45",
+        "date": -58,
         "description": "Fritext "
     },
     {
         "id": 51,
         "activityId": 5,
-        "time": 60,
-        "date": "2020-03-17",
+        "time": "01:00",
+        "date": -58,
         "description": "Fritext "
     },
     {
         "id": 52,
         "activityId": 4,
-        "time": 45,
-        "date": "2020-03-05",
+        "time": "00:45",
+        "date": -60,
         "description": "Fritext "
     },
     {
         "id": 53,
         "activityId": 8,
-        "time": 105,
-        "date": "2020-02-23",
+        "time": "01:45",
+        "date": -62,
         "description": "Fritext "
     },
     {
         "id": 54,
         "activityId": 3,
-        "time": 60,
-        "date": "2020-02-16",
+        "time": "01:00",
+        "date": -63,
         "description": "Fritext "
     },
     {
         "id": 55,
         "activityId": 1,
-        "time": 120,
-        "date": "2020-02-06",
+        "time": "02:00",
+        "date": -64,
         "description": "Fritext "
     },
     {
         "id": 56,
         "activityId": 6,
-        "time": 120,
-        "date": "2020-01-29",
+        "time": "02:00",
+        "date": -65,
         "description": "Fritext "
     },
     {
         "id": 57,
         "activityId": 3,
-        "time": 45,
-        "date": "2020-01-24",
+        "time": "00:45",
+        "date": -66,
         "description": "Fritext "
     }
 ]

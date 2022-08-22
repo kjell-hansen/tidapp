@@ -8,6 +8,7 @@ define('ROOT_DIR', __DIR__ . "/");
  */
 require_once ROOT_DIR . 'routing/routing.php';
 require_once ROOT_DIR . 'activity/activities.php';
+require_once ROOT_DIR . 'task/tasks.php';
 require_once ROOT_DIR . '/functions/functions.php';
 
 $querystring = filter_var($_SERVER['REQUEST_URI'], FILTER_UNSAFE_RAW);
@@ -27,6 +28,7 @@ switch ($route->route) {
                     $out = getActivity($db, (int) $route->params[0]);
                 } else {
                     $out = getActivities($db);
+                    resetDatabase();
                 }
                 break;
             case REQUEST_POST:
@@ -42,8 +44,9 @@ switch ($route->route) {
         break;
     case "/tasklist/":
         if (count($route->params) === 1) {
-            echo "Hämta uppgifter för sida:" . $route->params[0];
-            exit;
+            $out = getTasks($db, (int) $route->params[0]);
+            resetDatabase();
+            break;
         } else {
             echo "Hämta uppgifter mellan {$route->params[0]} och  {$route->params[1]}";
             exit;
