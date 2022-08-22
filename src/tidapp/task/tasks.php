@@ -18,12 +18,9 @@ function getTasks(stdClass $db, int $page): stdClass {
         foreach ($tasksToSend as $item) {
             $item->date = date("Y-m-d", strtotime("{$item->date}days"));
             $item->activity = "undefined";
-            foreach ($db->activities as $act) {
-                if ($act->id === $item->activityId) {
-                    $item->activity = $act->activity;
-                    break;
-                }
-            }
+            $activity= array_filter($db->activities, function ($itm) use ($item) {
+                return $itm->id===$item->activityId;                
+            });
         }
         $out->tasks = $tasksToSend;
         return createOutput($out);
