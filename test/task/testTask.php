@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../src/tidapp/task/tasks.php';
 
 testGetTasksByPage();
 testGetTasksByDate();
+testGetTask();
 
 function testGetTasksByPage(): void {
     $db = makeTestDb();
@@ -63,6 +64,26 @@ function testGetTasksByDate():void {
     } else {
         echo "GetTasksByDate fråndatum > tilldatum , förväntade: array \nfick \n";
         print_r($test);
+    }
+}
+
+function testGetTask():void {
+    $db = makeTestDb();
+    $test = json_decode(getTask($db, 2)->json);
+    $expect = new stdClass();
+    $expect->id = 2;
+    $expect->activity = "Slappat";
+    if (($test->id === $expect->id) && ($test->activity === $expect->activity)) {
+        echo "GetTask OK \n";
+    } else {
+        echo "GetTask #2 misslyckades förväntade \n\t" . json_encode($expect) . "\nfick \n\t" . json_encode($test) . "\n";
+    }
+
+    $test = json_decode(getTask($db, 0)->json);
+    if (isset($test->error) && is_array($test->error)) {
+        echo "GetTask (post saknas) OK \n";
+    } else {
+        echo "GetTask (post saknas) misslyckades förväntade array fick \n\t" . json_encode($test) . "\n";
     }
 }
 

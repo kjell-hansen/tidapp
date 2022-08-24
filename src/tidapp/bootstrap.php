@@ -48,15 +48,15 @@ switch ($route->route) {
             resetDatabase();
             break;
         } else {
-            echo "Hämta uppgifter mellan {$route->params[0]} och  {$route->params[1]}";
-            exit;
+            $out = getTasksByDate($db, new DateTime($route->params[0]), new DateTime( $route->params[1]));
+            resetDatabase();
+            break;
         }
         break;
     case "/task/":
         switch ($route->method) {
             case REQUEST_GET:
-                echo "Hämta uppgiftnr:" . $route->params[0];
-                exit;
+                $out= getTask($db, (int)$route->params[0]);
                 break;
             case REQUEST_POST:
                 echo "Spara NY aktivitet";
