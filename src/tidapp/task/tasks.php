@@ -150,6 +150,39 @@ function updateTask(stdClass $db, array $postData, int $id): stdClass {
     return createOutput($out);
 }
 
+function getCompilation(stdClass $db, DateTimeInterface $from, DateTimeInterface $to): stdClass {
+    $all = adjustDates($db->tasks);
+
+    $out = new stdClass();
+    if ($from > $to) {
+        $out->error = ["Fel vid hämtning", "Fråndatum ({$from->format("Y-m-d")} kan inte vara större än tilldatum ({$to->format("Y-m-d")})"];
+        return createOutput($out, 400);
+    } else {
+        $records = array_filter($all, function ($itm) use ($from, $to) {
+            return $itm->date >= $from->format("Y-m-d") && $itm->date <= $to->format("Y-m-d");
+        });
+        $sum=[];
+        $tasks=[];
+        foreach ($records as $item) {
+            $key=$item->activityId;
+            $tid= explode(":", $item->time);
+            $antalMinuter=$tid[0]*60+$tid[1];
+            if(isset($sum[$key])) {
+                $sum[$key]+=$antalMinuter;
+                $tasks[$key]->time= floor($sum[$key]/60) . ":" . trim(sprintf("%02d", $sum[$key]%60));
+            } else {
+                $tasks[$key]=new stdClass();
+                $tasks[$key]->activityId=$key;
+                $sum[$key]=$antalMinuter;
+                $tasks[$key]->time= floor($sum[$key]/60) . ":" . trim(sprintf("%02d", $sum[$key]%60));
+            }
+        }
+        $tasks= array_values(addActivityToTasks($tasks, $db->activities));
+        $out->tasks=$tasks;
+        return createOutput($out);
+    }
+}
+
 function adjustDates(array $tasks): array {
     return array_map(function ($item) {
         $itm = clone($item);

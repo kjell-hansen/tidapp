@@ -9,6 +9,7 @@ testGetTask();
 testDeleteTask();
 testAddTask();
 testUpdateTask();
+testCompilation();
 
 function testGetTasksByPage(): void {
     $db = makeTestDb();
@@ -187,6 +188,30 @@ function testUpdateTask(): void {
         echo "UpdateTask (felaktiga indata) OK\n";
     } else {
         echo "UpdateTask (felaktig indata) misslyckades, förväntade array \nfick\n\t" . json_encode($test) . "\n";
+    }
+}
+
+function testCompilation(): void {
+    $db = makeTestDB();
+    $test = json_decode(getCompilation($db, new DateTime("-20 days"), new DateTime())->json);
+    if (isset($test->tasks) && count($test->tasks) === 2) {
+        echo "GetCompilation OK\n";
+    } else {
+        echo "Compilation misslyckades förväntade 2 poster fick " . count($test->tasks) . "\n";
+    }
+
+    $test = json_decode(getCompilation($db, new DateTime("-1 days"), new DateTime())->json);
+    if (isset($test->tasks) && count($test->tasks) === 0) {
+        echo "Compilation (no records) OK\n";
+    } else {
+        echo "Compilation misslyckades förväntade 2 poster fick " . count($test->tasks) . "\n";
+    }
+
+    $test = json_decode(getCompilation($db, new DateTime("5 days"), new DateTime())->json);
+    if (isset($test->error) && is_array($test->error)) {
+        echo "Compilation (error) OK\n";
+    } else {
+        echo "Compilation (error) misslyckades fick \n\t" . json_encode($test) . "\n";
     }
 }
 

@@ -62,8 +62,7 @@ switch ($route->route) {
                 $out= addTask($db, $_POST);
                 break;
             case REQUEST_PUT:
-                echo "Uppdatera aktivitetnr:" . $route->params[0];
-                exit;
+                $out= addTask($db, $_POST, $route->params[0]);
                 break;
             case REQUEST_DELETE:
                 $out= deleteTask($db, $route->params[0]);
@@ -71,8 +70,7 @@ switch ($route->route) {
         }
         break;
     case "/compilation/":
-        echo "Hämta sammanställning mellan {$route->params[0]} och  {$route->params[1]}";
-        exit;
+        $out = getCompilation($db, new DateTime($route->params[0]), new DateTime( $route->params[1]));
         break;
     default:
         echo "Ogiltigt anrop";
