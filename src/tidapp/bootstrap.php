@@ -59,16 +59,14 @@ switch ($route->route) {
                 $out= getTask($db, (int)$route->params[0]);
                 break;
             case REQUEST_POST:
-                echo "Spara NY aktivitet";
-                exit;
+                $out= addTask($db, $_POST);
                 break;
             case REQUEST_PUT:
                 echo "Uppdatera aktivitetnr:" . $route->params[0];
                 exit;
                 break;
             case REQUEST_DELETE:
-                echo "Radera aktivitetnr:" . $route->params[0];
-                exit;
+                $out= deleteTask($db, $route->params[0]);
                 break;
         }
         break;

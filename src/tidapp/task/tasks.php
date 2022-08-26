@@ -42,17 +42,109 @@ function getTasksByDate(stdClass $db, DateTimeInterface $from, DateTimeInterface
 
 function getTask(stdClass $db, int $id): stdClass {
     $all = adjustDates($db->tasks);
-
     $out = new stdClass();
 
     $tasksToSend = array_values(array_filter($all, function ($itm) use ($id) {
-        return $itm->id === $id;
-    }));
+                return $itm->id === $id;
+            }));
     if (count($tasksToSend) === 1) {
         $out = addActivityToTasks($tasksToSend, $db->activities)[0];
     } else {
         $err = ["Fel inträffade", "Id: $id saknas"];
         $out->error = $err;
+    }
+
+    return createOutput($out);
+}
+
+function deleteTask(stdClass $db, int $id): stdClass {
+    $all = $db->tasks;
+
+    $out = new stdClass();
+
+    $new = array_values(array_filter($all, function ($itm) use ($id) {
+                return $itm->id !== $id;
+            }));
+
+    if ($all !== $new) {
+        $db->tasks = $new;
+        setDatabase($db);
+        $out->result = true;
+        $out->message = ["Radera post $id lyckades", "1 poster raderade"];
+    } else {
+        $out->result = false;
+        $out->message = ["Radera post $id misslyckades", "0 poster raderade"];
+    }
+
+    return createOutput($out);
+}
+
+function addTask(stdClass $db, array $postData): stdClass {
+
+    $out = new stdClass();
+    try {
+        $today = new DateTime();
+        $new = new stdClass();
+        $new->activityId = $postData["activityId"];
+        $new->time = $postData["time"];
+        $date = new DateTime($postData["date"]);
+        if ($date !== false) {
+            $new->date = $today->diff($date)->days;
+        } else {
+            throw new Exception("Ogiltigt datum");
+        }
+        $new->description = $postData["description"];
+        $max = 0;
+        foreach ($db->tasks as $item) {
+            if ($item->id > $max) {
+                $max = $item->id;
+            }
+        }
+        $max++;
+        $new->id = $max;
+        $db->tasks[] = $new;
+        setDatabase($db);
+        $out->id = $max;
+        $out->message = ["Spara ny post lyckades", "1 poster lades till"];
+    } catch (Exception $ex) {
+        $out->error[] = "Fel inträffade";
+        $out->error[] = $ex->getMessage();
+    }
+
+    return createOutput($out);
+}
+
+function updateTask(stdClass $db, array $postData, int $id): stdClass {
+    $out = new stdClass();
+    try {
+        $today = new DateTime();
+        $new = new stdClass();
+        $new->activityId = $postData["activityId"];
+        $new->time = $postData["time"];
+        $date = new DateTime($postData["date"]);
+        if ($date !== false) {
+            $new->date = $today->diff($date)->format("%R%a");
+        } else {
+            throw new Exception("Ogiltigt datum");
+        }
+        $new->description = $postData["description"];
+        $new->id = $id;
+        $old = array_values(array_filter($db->tasks, function ($itm) use ($id) {
+                    return $itm->id !== $id;
+                }));
+        if (count($old) === count($db->tasks) - 1) {
+            $db->tasks = $old;
+            $db->tasks[] = $new;
+            setDatabase($db);
+            $out->result = true;
+            $out->message = ["Uppdatera post $id lyckades", "1 poster uppdaterades"];
+        } else {
+            $out->result = false;
+            $out->message = ["Uppdatera post $id misslyckades", "0 poster uppdaterades"];
+        }
+    } catch (Exception $ex) {
+        $out->error[] = "Fel inträffade";
+        $out->error[] = $ex->getMessage();
     }
 
     return createOutput($out);

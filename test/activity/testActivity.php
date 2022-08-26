@@ -116,6 +116,16 @@ function testDeleteActivity(): void {
         echo "DeleteActivity misslyckades, förväntade \n\t" . json_encode($expected) . "\nfick \n\t" . json_decode($test) . "\n";
     }
     
+    $test = json_decode(deleteActivity($db, 1)->json);
+    $expected = new stdClass();
+    $expected->result = false;
+    $expected->message = ["Radera post 1 misslyckades", "0 poster raderade"];
+    if (isset($test->result) && isset($test->message) && $test->result === $expected->result && is_array($test->message)) {
+        echo "DeleteActivity OK\n";
+    } else {
+        echo "DeleteActivity misslyckades, förväntade \n\t" . json_encode($expected) . "\nfick \n\t" . json_decode($test) . "\n";
+    }
+    
     $test= json_decode(getActivity($db, 1)->json);
     if (isset($test->error) && is_array($test->error)) {
         echo "GetActivity efter delete OK \n";
