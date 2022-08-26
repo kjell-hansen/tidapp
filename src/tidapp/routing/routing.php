@@ -16,14 +16,15 @@ function getRoute(string $querystring, string $method = "GET"): stdClass {
         case 0:
         case 1:
         case 2:
+        case 3:
             $route = "";
             break;
-        case 3:
-            $route = $uri[2];
+        case 4:
+            $route = $uri[3];
             break;
         default :
-            $route = $uri[2];
-            $params = array_slice($uri, 3);
+            $route = $uri[3];
+            $params = array_slice($uri, 4);
     }
 
     $retur->route = $route==="" ? "/" : "/{$route}/";

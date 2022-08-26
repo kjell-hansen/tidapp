@@ -74,6 +74,7 @@ switch ($route->route) {
         break;
     default:
         echo "Ogiltigt anrop";
+//        print_r($route);
         exit;
 }
 header("{$out->statusText};Content-type:application/json;charset=utf-8");

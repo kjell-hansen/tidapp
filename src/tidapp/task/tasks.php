@@ -49,12 +49,12 @@ function getTask(stdClass $db, int $id): stdClass {
             }));
     if (count($tasksToSend) === 1) {
         $out = addActivityToTasks($tasksToSend, $db->activities)[0];
+        return createOutput($out);
     } else {
         $err = ["Fel inträffade", "Id: $id saknas"];
         $out->error = $err;
+        return createOutput($out, 400);
     }
-
-    return createOutput($out);
 }
 
 function deleteTask(stdClass $db, int $id): stdClass {
@@ -161,24 +161,24 @@ function getCompilation(stdClass $db, DateTimeInterface $from, DateTimeInterface
         $records = array_filter($all, function ($itm) use ($from, $to) {
             return $itm->date >= $from->format("Y-m-d") && $itm->date <= $to->format("Y-m-d");
         });
-        $sum=[];
-        $tasks=[];
+        $sum = [];
+        $tasks = [];
         foreach ($records as $item) {
-            $key=$item->activityId;
-            $tid= explode(":", $item->time);
-            $antalMinuter=$tid[0]*60+$tid[1];
-            if(isset($sum[$key])) {
-                $sum[$key]+=$antalMinuter;
-                $tasks[$key]->time= floor($sum[$key]/60) . ":" . trim(sprintf("%02d", $sum[$key]%60));
+            $key = $item->activityId;
+            $tid = explode(":", $item->time);
+            $antalMinuter = $tid[0] * 60 + $tid[1];
+            if (isset($sum[$key])) {
+                $sum[$key] += $antalMinuter;
+                $tasks[$key]->time = floor($sum[$key] / 60) . ":" . trim(sprintf("%02d", $sum[$key] % 60));
             } else {
-                $tasks[$key]=new stdClass();
-                $tasks[$key]->activityId=$key;
-                $sum[$key]=$antalMinuter;
-                $tasks[$key]->time= floor($sum[$key]/60) . ":" . trim(sprintf("%02d", $sum[$key]%60));
+                $tasks[$key] = new stdClass();
+                $tasks[$key]->activityId = $key;
+                $sum[$key] = $antalMinuter;
+                $tasks[$key]->time = floor($sum[$key] / 60) . ":" . trim(sprintf("%02d", $sum[$key] % 60));
             }
         }
-        $tasks= array_values(addActivityToTasks($tasks, $db->activities));
-        $out->tasks=$tasks;
+        $tasks = array_values(addActivityToTasks($tasks, $db->activities));
+        $out->tasks = $tasks;
         return createOutput($out);
     }
 }
