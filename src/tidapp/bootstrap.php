@@ -73,7 +73,7 @@ switch ($route->route) {
         $out = getCompilation($db, new DateTime($route->params[0]), new DateTime( $route->params[1]));
         break;
     default:
-        echo "Ogiltigt anrop";
+        include ROOT_DIR . 'info/info.html';
 //        print_r($route);
         exit;
 }

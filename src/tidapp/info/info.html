@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tidsredovisning - Information</title>
+        <meta charset="UTF-8">
+        <link href="info.css" rel="stylesheet" type="text/css"/>
+    </head>
+    <body>
+        <h1>Tidsredovisning - test API</h1>
+        <p class="noEndpoint">Angiven URL är ingen endpoint för API-anropen, därför ser du denna sidan.</p>
+        <p>Följande endpoints är definierade:</p>
+        <table>
+            <tr>
+                <th>Endpoint</th>
+                <th>Metod</th>
+                <th>Beskrivning</th>
+                <th>Inparametrar</th>
+                <th>Svar</th>
+            </tr>
+            <tr>
+                <td>/activity/</td>
+                <td>GET</td>
+                <td>
+                    Hämtar alla aktiviteter<br>
+                    (och återställer ev förändringar)
+                </td>
+                <td> </td>
+                <td><span class="responseStatus">Status: 200</span>
+                    <ul>
+                        <li>activitites [
+                            <ul>
+                                <li>id (int)</li>
+                                <li>activity (text)</li>
+                            </ul>
+                        </li>
+                        <li class="noDash">]</li>
+                    </ul>
+                    <span class="responseStatus">Status: 400</span>
+                    <ul>
+                        <li>error [(text)]</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>/activity/{id}</td>
+                <td>GET</td>
+                <td>Hämtar en enskild aktivitet</td>
+                <td><span class="responseStatus">[GET-data]</span>
+                    <ul>
+                        <li>id (int)</li>
+                    </ul>
+                </td>
+                <td><span class="responseStatus">Status: 200</span>
+                    <ul>
+                        <li>id (int)</li>
+                        <li>activity (text)</li>
+                    </ul>
+                    <span class="responseStatus">Status: 400</span>
+                    <ul>
+                        <li>error [(text)]</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>/activity/</td>
+                <td>POST</td>
+                <td>
+                    Sparar en ny aktivitet<br>
+                    Nya postens id fås i retur vid lyckad spara
+                </td>
+                <td><span class="responseStatus">[POST-data]</span>
+                    <ul>
+                        <li>activity (text)</li>
+                        <li>action=save</li>
+                    </ul>
+                </td>
+                <td><span class="responseStatus">Status: 200</span>
+                    <ul>
+                        <li>id (int)</li>
+                        <li>message [(text)]</li>
+                    </ul>
+                    <span class="responseStatus">Status: 400</span>
+                    <ul>
+                        <li>error [(text)]</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>/activity/{id}</td>
+                <td>POST</td>
+                <td>Uppdaterar en befintlig aktivitet</td>
+                <td><span class="responseStatus">[GET-data]</span>
+                    <ul>
+                        <li>id (int)</li>
+                    </ul>
+                    <span class="responseStatus">[POST-data]</span>
+                    <ul>
+                        <li>activity (text)</li>
+                        <li>action=save</li>
+                    </ul>
+                </td>
+                <td><span class="responseStatus">Status: 200</span>
+                    <ul>
+                        <li>result (boolean)</li>
+                        <li>message [(text)]</li>
+                    </ul>
+                    <span class="responseStatus">Status: 400</span>
+                    <ul>
+                        <li>error [(text)]</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>/activity/{id}</td>
+                <td>POST</td>
+                <td>Raderar en befintlig aktivitet</td>
+                <td><span class="responseStatus">[GET-data]</span>
+                    <ul>
+                        <li>id (int)</li>
+                    </ul>
+                    <span class="responseStatus">[POST-data]</span>
+                    <ul>
+                        <li>action=delete</li>
+                    </ul>
+                </td>
+                <td><span class="responseStatus">Status: 200</span>
+                    <ul>
+                        <li>result (boolean)</li>
+                        <li>message [(text)]</li>
+                    </ul>
+                    <span class="responseStatus">Status: 400</span>
+                    <ul>
+                        <li>error [(text)]</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>/tasklist/{page}</td>
+                <td>GET</td>
+                <td>
+                    Hämtar alla uppgifter för angiven sida, 5 poster per sida<br>
+                    (och återställer ev förändringar)
+                </td>
+                <td><span class="responseStatus">[GET-data]</span>
+                    <ul>
+                        <li>id (int)</li>
+                    </ul>
+                </td>
+                <td><span class="responseStatus">Status: 200</span>
+                    <ul>
+                        <li>pages (int)
+                        <li>tasks [
+                            <ul>
+                                <li>id (int)</li>
+                                <li>activityId (int)</li>
+                                <li>date (date: yyyy-mm-dd)</li>
+                                <li>time (time: hh:mm)</li>
+                                <li>description (text)</li>
+                                <li>activity (text)</li>
+                            </ul>
+                        </li>
+                        <li class="noDash">]</li>
+                    </ul>
+                    <span class="responseStatus">Status: 400</span>
+                    <ul>
+                        <li>error [(text)]</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>/tasklist/{from}/{to}</td>
+                <td>GET</td>
+                <td>
+                    Hämtar alla uppgifter för angivet datumintervall<br>
+                    (och återställer ev förändringar)
+                </td>
+                <td><span class="responseStatus">[GET-data]</span>
+                    <ul>
+                        <li>from (date: yyyy-mm-dd)</li>
+                        <li>to (date: yyyy-mm-dd)</li>
+                    </ul>
+                </td>
+                <td><span class="responseStatus">Status: 200</span>
+                    <ul>
+                        <li>tasks [
+                            <ul>
+                                <li>id (int)</li>
+                                <li>activityId (int)</li>
+                                <li>date (date: yyyy-mm-dd)</li>
+                                <li>time (time: hh:mm)</li>
+                                <li>description (text)</li>
+                                <li>activity (text)</li>
+                            </ul>
+                        </li>
+                        <li class="noDash">]</li>
+                    </ul>
+                    <span class="responseStatus">Status: 400</span>
+                    <ul>
+                        <li>error [(text)]</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>/task/{id}</td>
+                <td>GET</td>
+                <td>
+                    Hämtar enskild uppgift med angivet id
+                </td>
+                <td><span class="responseStatus">[GET-data]</span>
+                    <ul>
+                        <li>id (int)</li>
+                    </ul>
+                </td>
+                <td><span class="responseStatus">Status: 200</span>
+                    <ul>
+                        <li>id (int)</li>
+                        <li>activityId (int)</li>
+                        <li>date (date: yyyy-mm-dd)</li>
+                        <li>time (time: hh:mm)</li>
+                        <li>description (text)</li>
+                        <li>activity (text)</li>
+                    </ul>
+                    <span class="responseStatus">Status: 400</span>
+                    <ul>
+                        <li>error [(text)]</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>/task/</td>
+                <td>POST</td>
+                <td>
+                    Spara ny uppgift<br>
+                    Nya postens id fås i retur vid lyckad spara
+                </td>
+                <td><span class="responseStatus">[POST-data]</span>
+                    <ul>
+                        <li>activityId (int)</li>
+                        <li>date (date: yyyy-mm-dd)</li>
+                        <li>time (time: hh:mm)</li>
+                        <li>description (text)</li>
+                        <li>action=save</li>
+                    </ul>
+                </td>
+                <td><span class="responseStatus">Status: 200</span>
+                    <ul>
+                        <li>id (int)</li>
+                        <li>message [(text)]</li>
+                    </ul>
+                    <span class="responseStatus">Status: 400</span>
+                    <ul>
+                        <li>error [(text)]</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>/task/{id}</td>
+                <td>POST</td>
+                <td>
+                    Uppdatera befintlig uppgift
+                </td>
+                <td>
+                    <span class="responseStatus">[GET-data]</span>
+                    <ul>
+                        <li>id (int)</li>
+                    </ul>
+                    <span class="responseStatus">[POST-data]</span>
+                    <ul>
+                        <li>activityId (int)</li>
+                        <li>date (date: yyyy-mm-dd)</li>
+                        <li>time (time: hh:mm)</li>
+                        <li>description (text)</li>
+                        <li>action=save</li>
+                    </ul>
+                </td>
+                <td><span class="responseStatus">Status: 200</span>
+                    <ul>
+                        <li>result (boolean)</li>
+                        <li>message [(text)]</li>
+                    </ul>
+                    <span class="responseStatus">Status: 400</span>
+                    <ul>
+                        <li>error [(text)]</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>/task/{id}</td>
+                <td>POST</td>
+                <td>
+                    Radera befintlig uppgift
+                </td>
+                <td>
+                    <span class="responseStatus">[GET-data]</span>
+                    <ul>
+                        <li>id (int)</li>
+                    </ul>
+                    <span class="responseStatus">[POST-data]</span>
+                    <ul>
+                        <li>action=delete</li>
+                    </ul>
+                </td>
+                <td><span class="responseStatus">Status: 200</span>
+                    <ul>
+                        <li>result (boolean)</li>
+                        <li>message [(text)]</li>
+                    </ul>
+                    <span class="responseStatus">Status: 400</span>
+                    <ul>
+                        <li>error [(text)]</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>/compilation/{from}/{to}</td>
+                <td>GET</td>
+                <td>
+                    Hämtar en sammanställning av alla poster inom angivet datumintervall
+                </td>
+                <td>
+                    <span class="responseStatus">[GET-data]</span>
+                    <ul>
+                        <li>from (date: yyyy-mm-dd)</li>
+                        <li>to (date: yyyy-mm-dd)</li>
+                    </ul>
+                </td>
+                <td><span class="responseStatus">Status: 200</span>
+                    <ul>
+                        <li>tasks [
+                            <ul>
+                                <li>activityId (int)</li>
+                                <li>time (time: hh:mm)</li>
+                                <li>activity (text)</li>
+                            </ul>
+                        </li>
+                        <li class="noDash">]</li>
+                    </ul>
+                    <span class="responseStatus">Status: 400</span>
+                    <ul>
+                        <li>error [(text)]</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+        <p>Saknas rätt inparametrar eller inparametrarna är av fel datatyp returneras ett JSON-objekt med en fel-kod (400 Bad request)</p>
+    </body>
+</html>
