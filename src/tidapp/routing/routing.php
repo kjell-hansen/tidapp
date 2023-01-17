@@ -34,7 +34,7 @@ function getRoute(string $querystring, string $method = "GET"): stdClass {
         $retur->method = REQUEST_POST;
         if (isset($_POST["action"]) && $_POST["action"] === "delete") {
             $retur->method = REQUEST_DELETE;
-        } elseif (isset($_POST["action"]) && $_POST["action"] === "save" && count($params) > 0) {
+        } elseif (isset($_POST["action"]) && $_POST["action"] === "save" && count($retur->params) > 0) {
             $retur->method = REQUEST_PUT;
         }
     } else {

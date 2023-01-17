@@ -76,7 +76,7 @@ function updateActivity(stdClass $db, array $postData, int $id): stdClass{
         return createOutput($out);
     } catch (Exception $exc) {
         $err = new stdClass();
-        $err->error = ["Fel vid spara ny post", $exc->getMessage()];
+        $err->error = ["Fel vid uppdatera post", $exc->getMessage()];
         return createOutput($err, 400);
     }
 }
