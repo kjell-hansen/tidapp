@@ -64,7 +64,7 @@ switch ($route->route) {
                 $out= addTask($db, $_POST);
                 break;
             case REQUEST_PUT:
-                $out= addTask($db, $_POST, $route->params[0]);
+                $out= updateTask($db, $_POST,(int) $route->params[0]);
                 break;
             case REQUEST_DELETE:
                 $out= deleteTask($db, $route->params[0]);

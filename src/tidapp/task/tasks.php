@@ -83,17 +83,35 @@ function addTask(stdClass $db, array $postData): stdClass {
 
     $out = new stdClass();
     try {
-        $today = new DateTime();
+        $today = new DateTimeImmutable();
         $new = new stdClass();
-        $new->activityId = $postData["activityId"];
-        $new->time = $postData["time"];
-        $date = new DateTime($postData["date"]);
+        if (!isset($postData["activityId"])) {
+            throw new Exception("Aktivitet (activityId) saknas");
+        }
+        $new->activityId =(int) $postData["activityId"];
+        if (!isset($postData["time"])) {
+            throw new Exception("Tid (time) saknas");
+        }
+        $time = DateTimeImmutable::createFromFormat("H:i", $postData["time"]);
+        if ($time !== false) {
+            $new->time = $postData["time"];
+        } else {
+            throw new Exception("Ogiltig tid");
+        }
+        if (!isset($postData["date"])) {
+            throw new Exception("Datum (date) saknas");
+        }
+        $date = new DateTimeImmutable($postData["date"]);
         if ($date !== false) {
-            $new->date = $today->diff($date)->days;
+            if ($date->format('Y-m-d') < $today->format('Y-m-d')) {
+                $new->date = $today->diff($date)->format("%R%a");
+            } else {
+                throw new Exception("Datum får inte vara i framtiden");
+            }
         } else {
             throw new Exception("Ogiltigt datum");
         }
-        $new->description = $postData["description"];
+        $new->description = $postData["description"] ?? null;
         $max = 0;
         foreach ($db->tasks as $item) {
             if ($item->id > $max) {
@@ -106,28 +124,46 @@ function addTask(stdClass $db, array $postData): stdClass {
         setDatabase($db);
         $out->id = $max;
         $out->message = ["Spara ny post lyckades", "1 poster lades till"];
+        return createOutput($out);
     } catch (Exception $ex) {
         $out->error[] = "Fel inträffade";
         $out->error[] = $ex->getMessage();
+        return createOutput($out, 400);
     }
-
-    return createOutput($out);
 }
 
 function updateTask(stdClass $db, array $postData, int $id): stdClass {
     $out = new stdClass();
     try {
-        $today = new DateTime();
+        $today = new DateTimeImmutable();
         $new = new stdClass();
-        $new->activityId = $postData["activityId"];
-        $new->time = $postData["time"];
-        $date = new DateTime($postData["date"]);
+        if (!isset($postData["activityId"])) {
+            throw new Exception("Aktivitet (activityId) saknas");
+        }
+        $new->activityId =(int) $postData["activityId"];
+        if (!isset($postData["time"])) {
+            throw new Exception("Tid (time) saknas");
+        }
+        $time = DateTimeImmutable::createFromFormat("H:i", $postData["time"]);
+        if ($time !== false) {
+            $new->time = $postData["time"];
+        } else {
+            throw new Exception("Ogiltig tid");
+        }
+        if (!isset($postData["date"])) {
+            throw new Exception("Datum (date) saknas");
+        }
+        $date = new DateTimeImmutable($postData["date"]);
         if ($date !== false) {
-            $new->date = $today->diff($date)->format("%R%a");
+            if ($date->format('Y-m-d') < $today->format('Y-m-d')) {
+                $new->date = $today->diff($date)->format("%R%a");
+            } else {
+                throw new Exception("Datum får inte vara i framtiden");
+            }
         } else {
             throw new Exception("Ogiltigt datum");
         }
-        $new->description = $postData["description"];
+        $new->description = $postData["description"] ?? null;
         $new->id = $id;
         $old = array_values(array_filter($db->tasks, function ($itm) use ($id) {
                     return $itm->id !== $id;
@@ -142,12 +178,12 @@ function updateTask(stdClass $db, array $postData, int $id): stdClass {
             $out->result = false;
             $out->message = ["Uppdatera post $id misslyckades", "0 poster uppdaterades"];
         }
+        return createOutput($out);
     } catch (Exception $ex) {
-        $out->error[] = "Fel inträffade";
-        $out->error[] = $ex->getMessage();
+        $err = new stdClass();
+        $err->error = ["Fel vid uppdatera post", $ex->getMessage()];
+        return createOutput($err, 400);
     }
-
-    return createOutput($out);
 }
 
 function getCompilation(stdClass $db, DateTimeInterface $from, DateTimeInterface $to): stdClass {
