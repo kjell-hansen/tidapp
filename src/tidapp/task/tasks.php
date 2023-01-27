@@ -4,8 +4,7 @@ declare (strict_types=1);
 require_once __DIR__ . '/../functions/functions.php';
 
 function getTasksByPage(stdClass $db, int $page): stdClass {
-    $all = $db->tasks;
-    adjustDates($all);
+    $all = adjustDates($db->tasks);
 
     $first = ($page - 1) * 5;
     $out = new stdClass();
@@ -88,7 +87,7 @@ function addTask(stdClass $db, array $postData): stdClass {
         if (!isset($postData["activityId"])) {
             throw new Exception("Aktivitet (activityId) saknas");
         }
-        $new->activityId =(int) $postData["activityId"];
+        $new->activityId = (int) $postData["activityId"];
         if (!isset($postData["time"])) {
             throw new Exception("Tid (time) saknas");
         }
@@ -140,7 +139,7 @@ function updateTask(stdClass $db, array $postData, int $id): stdClass {
         if (!isset($postData["activityId"])) {
             throw new Exception("Aktivitet (activityId) saknas");
         }
-        $new->activityId =(int) $postData["activityId"];
+        $new->activityId = (int) $postData["activityId"];
         if (!isset($postData["time"])) {
             throw new Exception("Tid (time) saknas");
         }
